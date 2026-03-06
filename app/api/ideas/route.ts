@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
-import clientPromise from "@/lib/mongodb";
+import { getDb } from "@/lib/mongodb";
 import { checkSimilarity, generateEmbedding } from "@/lib/ai/similarity";
 import { generateSummary } from "@/lib/ai/summarize";
 
@@ -14,8 +14,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "subTopicId is required" }, { status: 400 });
     }
 
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
     const ideas = await db.collection("ideas")
       .find({ subTopicId })
       .sort({ createdAt: -1 })
@@ -64,8 +63,7 @@ export async function POST(request: NextRequest) {
     // Generate summary for the new idea
     const summary = await generateSummary(title, description);
 
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
 
     const newIdea = {
       title,

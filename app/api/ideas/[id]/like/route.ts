@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import clientPromise from "@/lib/mongodb";
+import { getDb } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export async function POST(
@@ -20,8 +20,7 @@ export async function POST(
   }
 
   try {
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
 
     const idea = await db.collection("ideas").findOne({ _id: new ObjectId(id) });
     if (!idea) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import clientPromise from "@/lib/mongodb";
+import { getDb } from "@/lib/mongodb";
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -12,8 +12,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
     const ideas = await db.collection("ideas")
       .find({})
       .sort({ createdAt: -1 })

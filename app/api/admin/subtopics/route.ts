@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import clientPromise from "@/lib/mongodb";
+import { getDb } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 async function isAdmin() {
@@ -16,8 +16,7 @@ export async function GET() {
   }
 
   try {
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
 
     // Fetch subtopics
     const subtopics = await db.collection("subtopics").find().toArray();
@@ -47,8 +46,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const { title } = await request.json();
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
 
     const result = await db.collection("subtopics").insertOne({
       title,
@@ -68,8 +66,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const { id, title } = await request.json();
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
 
     await db.collection("subtopics").updateOne(
       { _id: new ObjectId(id) },
@@ -95,8 +92,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "ID required" }, { status: 400 });
     }
 
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
 
     await db.collection("subtopics").deleteOne({ _id: new ObjectId(id) });
     // Note: In a real app, you might want to handle ideas linked to this subtopic

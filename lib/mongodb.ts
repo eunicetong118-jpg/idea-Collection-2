@@ -36,3 +36,9 @@ if (!uri) {
 // Export a module-scoped MongoClient promise. By doing this in a
 // separate module, the client can be shared across functions.
 export default clientPromise;
+
+export async function getDb() {
+  const client = await clientPromise;
+  // Use the database name from the URI if available, otherwise default to "idea-collection"
+  return client.db("idea-collection");
+}

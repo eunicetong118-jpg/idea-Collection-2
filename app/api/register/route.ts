@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
+import { getDb } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 
 export async function POST(request: NextRequest) {
@@ -10,8 +10,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDb();
 
     // Check if user already exists
     const existingUser = await db.collection("users").findOne({ email });
