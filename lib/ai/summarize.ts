@@ -10,7 +10,7 @@ export async function generateSummary(title: string, description: string): Promi
 
   const model = new ChatGoogleGenerativeAI({
     apiKey: process.env.GOOGLE_API_KEY,
-    modelName: "gemini-1.5-flash",
+    model: "gemini-1.5-flash",
     temperature: 0,
   });
 
