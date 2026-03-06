@@ -1,16 +1,16 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
 export async function generateSummary(title: string, description: string): Promise<string> {
-  if (!process.env.OPENAI_API_KEY) {
-    console.warn("OPENAI_API_KEY is not set. Skipping summarization.");
+  if (!process.env.GOOGLE_API_KEY) {
+    console.warn("GOOGLE_API_KEY is not set. Skipping summarization.");
     return "Summarization unavailable (missing API key).";
   }
 
-  const model = new ChatOpenAI({
-    openAIApiKey: process.env.OPENAI_API_KEY,
-    modelName: "gpt-4o-mini",
+  const model = new ChatGoogleGenerativeAI({
+    apiKey: process.env.GOOGLE_API_KEY,
+    modelName: "gemini-1.5-flash",
     temperature: 0,
   });
 

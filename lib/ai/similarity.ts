@@ -1,14 +1,17 @@
-import { OpenAIEmbeddings } from "@langchain/openai";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { TaskType } from "@google/generative-ai";
 import clientPromise from "@/lib/mongodb";
 
 export async function checkSimilarity(text: string) {
-  if (!process.env.OPENAI_API_KEY) {
-    console.warn("OPENAI_API_KEY is not set. Skipping similarity check.");
+  if (!process.env.GOOGLE_API_KEY) {
+    console.warn("GOOGLE_API_KEY is not set. Skipping similarity check.");
     return null;
   }
 
-  const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: process.env.OPENAI_API_KEY,
+  const embeddings = new GoogleGenerativeAIEmbeddings({
+    apiKey: process.env.GOOGLE_API_KEY,
+    modelName: "embedding-001", // Default Google embedding model
+    taskType: TaskType.RETRIEVAL_QUERY,
   });
 
   const queryVector = await embeddings.embedQuery(text);
@@ -50,12 +53,14 @@ export async function checkSimilarity(text: string) {
 }
 
 export async function generateEmbedding(text: string) {
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.GOOGLE_API_KEY) {
     return null;
   }
 
-  const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: process.env.OPENAI_API_KEY,
+  const embeddings = new GoogleGenerativeAIEmbeddings({
+    apiKey: process.env.GOOGLE_API_KEY,
+    modelName: "embedding-001",
+    taskType: TaskType.RETRIEVAL_DOCUMENT,
   });
 
   return await embeddings.embedQuery(text);

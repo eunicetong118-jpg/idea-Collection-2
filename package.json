@@ -12,6 +12,7 @@
     "@auth/mongodb-adapter": "^3.11.1",
     "@langchain/community": "^1.1.22",
     "@langchain/core": "^1.1.31",
+    "@langchain/google-genai": "^2.1.24",
     "@langchain/openai": "^1.2.12",
     "clsx": "^2.1.1",
     "langchain": "^1.2.30",
