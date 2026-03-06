@@ -59,8 +59,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Submit a New Idea</h2>
+    <div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -74,30 +73,32 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <input
             id="title"
             type="text"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
             disabled={loading}
+            placeholder="What's your idea?"
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
             Description
           </label>
           <textarea
             id="description"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32"
+            className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 h-40 resize-none"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
             disabled={loading}
+            placeholder="Describe your idea in detail..."
           />
         </div>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full disabled:bg-blue-300"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full disabled:bg-blue-300 transition-colors shadow-lg shadow-blue-100"
           disabled={loading}
         >
           {loading ? "Submitting..." : "Submit Idea"}

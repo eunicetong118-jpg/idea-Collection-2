@@ -71,8 +71,12 @@ export async function POST(request: NextRequest) {
       userId: session.user.email,
       userName: session.user.name,
       createdAt: new Date(),
+      lastActivityAt: new Date(),
       embedding: embedding,
-      status: "pending" // Default status
+      stage: "Idea",
+      stage_status: "Pending",
+      likes: [],
+      commentCount: 0
     };
 
     const result = await db.collection("ideas").insertOne(newIdea);

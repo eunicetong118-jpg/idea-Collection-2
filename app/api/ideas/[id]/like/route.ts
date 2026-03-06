@@ -1,0 +1,56 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = params;
+  const userEmail = session.user.email;
+
+  try {
+    const client = await clientPromise;
+    const db = client.db();
+
+    const idea = await db.collection("ideas").findOne({ _id: new ObjectId(id) });
+    if (!idea) {
+      return NextResponse.json({ error: "Idea not found" }, { status: 404 });
+    }
+
+    const likes = idea.likes || [];
+    const hasLiked = likes.includes(userEmail);
+
+    if (hasLiked) {
+      // Unlike
+      await db.collection("ideas").updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $pull: { likes: userEmail },
+          $set: { lastActivityAt: new Date() }
+        }
+      );
+    } else {
+      // Like
+      await db.collection("ideas").updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $addToSet: { likes: userEmail },
+          $set: { lastActivityAt: new Date() }
+        }
+      );
+    }
+
+    return NextResponse.json({ success: true, liked: !hasLiked });
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    return NextResponse.json({ error: "Failed to toggle like" }, { status: 500 });
+  }
+}

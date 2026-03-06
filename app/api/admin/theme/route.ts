@@ -9,7 +9,8 @@ async function isAdmin() {
 }
 
 export async function GET() {
-  if (!(await isAdmin())) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
