@@ -15,7 +15,7 @@ interface SubTopic {
 interface Idea {
   id: string;
   title: string;
-  summary: string;
+  summary?: string;
 }
 
 export default function AdminPage() {
@@ -25,9 +25,7 @@ export default function AdminPage() {
   const [subTopics, setSubTopics] = useState<SubTopic[]>([]);
   const [newSubTopic, setNewSubTopic] = useState("");
   const [editingSubTopic, setEditingSubTopic] = useState<SubTopic | null>(null);
-  const [ideas, setIdeas] = useState<Idea[]>([
-    { id: "1", title: "Example Idea", summary: "This is an AI-generated summary of the example idea." }
-  ]);
+  const [ideas, setIdeas] = useState<Idea[]>([]);
   const [hoveredSummary, setHoveredSummary] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,6 +38,7 @@ export default function AdminPage() {
     if ((session?.user as any)?.isAdmin) {
       fetchTheme();
       fetchSubTopics();
+      fetchIdeas();
     }
   }, [session]);
 
@@ -56,6 +55,14 @@ export default function AdminPage() {
     if (res.ok) {
       const data = await res.json();
       setSubTopics(data);
+    }
+  };
+
+  const fetchIdeas = async () => {
+    const res = await fetch("/api/admin/ideas");
+    if (res.ok) {
+      const data = await res.json();
+      setIdeas(data);
     }
   };
 
@@ -207,7 +214,7 @@ export default function AdminPage() {
             <div
               key={idea.id}
               className="p-3 border rounded hover:bg-slate-50 cursor-help flex items-center justify-between group"
-              onMouseEnter={() => setHoveredSummary(idea.summary)}
+              onMouseEnter={() => setHoveredSummary(idea.summary || "No summary available.")}
               onMouseLeave={() => setHoveredSummary(null)}
             >
               <span className="font-medium">{idea.title}</span>

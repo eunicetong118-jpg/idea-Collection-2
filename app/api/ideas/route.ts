@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import clientPromise from "@/lib/mongodb";
 import { checkSimilarity, generateEmbedding } from "@/lib/ai/similarity";
+import { generateSummary } from "@/lib/ai/summarize";
 
 export async function GET(request: NextRequest) {
   try {
@@ -60,6 +61,8 @@ export async function POST(request: NextRequest) {
 
     // Generate embedding for the new idea
     const embedding = await generateEmbedding(combinedText);
+    // Generate summary for the new idea
+    const summary = await generateSummary(title, description);
 
     const client = await clientPromise;
     const db = client.db();
@@ -73,6 +76,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date(),
       lastActivityAt: new Date(),
       embedding: embedding,
+      summary: summary,
       stage: "Idea",
       stage_status: "Pending",
       likes: [],
