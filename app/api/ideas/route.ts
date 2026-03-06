@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || !session.user) {
+  if (!session || !session.user || !session.user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       description,
       subTopicId,
       userId: session.user.email,
-      userName: session.user.name,
+      userName: session.user.name || "Anonymous",
       createdAt: new Date(),
       lastActivityAt: new Date(),
       embedding: embedding,

@@ -6,15 +6,18 @@ import { ObjectId } from "mongodb";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = params;
   const userEmail = session.user.email;
+  if (!userEmail) {
+    return NextResponse.json({ error: "User email not found" }, { status: 400 });
+  }
 
   try {
     const client = await clientPromise;
@@ -33,7 +36,7 @@ export async function POST(
       await db.collection("ideas").updateOne(
         { _id: new ObjectId(id) },
         {
-          $pull: { likes: userEmail },
+          $pull: { likes: userEmail } as any,
           $set: { lastActivityAt: new Date() }
         }
       );
@@ -42,7 +45,7 @@ export async function POST(
       await db.collection("ideas").updateOne(
         { _id: new ObjectId(id) },
         {
-          $addToSet: { likes: userEmail },
+          $addToSet: { likes: userEmail } as any,
           $set: { lastActivityAt: new Date() }
         }
       );

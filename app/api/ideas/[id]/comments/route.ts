@@ -6,14 +6,13 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const { id } = params;
 
   try {
     const client = await clientPromise;
@@ -33,14 +32,14 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
-  if (!session || !session.user) {
+  if (!session || !session.user || !session.user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = params;
   const { content } = await request.json();
 
   if (!content) {
@@ -55,7 +54,7 @@ export async function POST(
       ideaId: id,
       content,
       userId: session.user.email,
-      userName: session.user.name,
+      userName: session.user.name || "Anonymous",
       createdAt: new Date(),
     };
 
