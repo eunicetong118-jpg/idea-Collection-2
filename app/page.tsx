@@ -44,8 +44,20 @@ export default function LandingPage() {
     if (status === "authenticated") {
       if (subTopics.length > 0) {
         router.push(`/dashboard/${subTopics[0].id}`);
-      } else {
-        router.push("/admin"); // If no topics, go to admin to create one
+      } else if ((session?.user as any)?.isAdmin) {
+        router.push("/admin");
+      }
+    } else {
+      router.push("/register");
+    }
+  };
+
+  const handleJoin = () => {
+    if (status === "authenticated") {
+      if (subTopics.length > 0) {
+        router.push(`/dashboard/${subTopics[0].id}`);
+      } else if ((session?.user as any)?.isAdmin) {
+        router.push("/admin");
       }
     } else {
       signIn();
@@ -118,16 +130,25 @@ export default function LandingPage() {
               onClick={handleStart}
               className="group relative flex items-center justify-center bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-blue-200 hover:bg-blue-700 hover:shadow-blue-300 transition-all active:scale-95 w-full sm:w-auto"
             >
-              <span>Get Started</span>
+              <span>{status === "authenticated" ? "Go to Dashboard" : "Get Started"}</span>
               <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
             </button>
 
             <button
-              onClick={() => router.push("/register")}
+              onClick={handleJoin}
               className="flex items-center justify-center bg-white text-gray-900 border-2 border-gray-100 px-8 py-4 rounded-2xl font-bold text-lg hover:border-blue-200 hover:bg-blue-50/50 transition-all active:scale-95 w-full sm:w-auto"
             >
-              <UserPlus size={20} className="mr-2 text-gray-400" />
-              <span>Join Discussion</span>
+              {status === "authenticated" ? (
+                <>
+                  <LayoutDashboard size={20} className="mr-2 text-gray-400" />
+                  <span>Main Page</span>
+                </>
+              ) : (
+                <>
+                  <UserPlus size={20} className="mr-2 text-gray-400" />
+                  <span>Join Discussion</span>
+                </>
+              )}
             </button>
           </div>
 
