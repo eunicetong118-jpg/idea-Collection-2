@@ -70,48 +70,6 @@ export default function LandingPage() {
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-50 rounded-full blur-3xl opacity-50 pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-50 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
-      {/* Navigation */}
-      <nav className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <div className="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-200">
-              <LayoutDashboard size={24} />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-gray-900">
-              {theme.title}
-            </span>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {status === "authenticated" && (session?.user as any)?.isAdmin && (
-              <button
-                onClick={() => router.push("/admin")}
-                className="flex items-center space-x-2 bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-all shadow-md active:scale-95"
-              >
-                <ShieldCheck size={16} />
-                <span>Admin Panel</span>
-              </button>
-            )}
-
-            {status === "authenticated" ? (
-              <div className="flex items-center space-x-3 bg-gray-100 pl-3 pr-1 py-1 rounded-full border border-gray-200">
-                <span className="text-sm font-medium text-gray-600">{session.user?.name}</span>
-                <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-inner">
-                  {session.user?.name?.charAt(0).toUpperCase()}
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={() => signIn()}
-                className="text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                Log In
-              </button>
-            )}
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         <div className="text-center">
