@@ -21,7 +21,7 @@ async function testConnection() {
     console.log("Available collections:", collections.map(c => c.name));
     await client.close();
     process.exit(0);
-  } catch (error) {
+  } catch (error: any) {
     console.error("FAILURE: Could not connect to MongoDB.");
     console.error("Error details:", error.message);
     process.exit(1);
