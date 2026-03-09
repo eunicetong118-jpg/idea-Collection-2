@@ -10,7 +10,7 @@ export async function checkSimilarity(text: string) {
 
   const embeddings = new GoogleGenerativeAIEmbeddings({
     apiKey: process.env.GOOGLE_API_KEY,
-    model: "embedding-001", // Default Google embedding model
+    model: "text-embedding-004", // Updated from embedding-001
     taskType: TaskType.RETRIEVAL_QUERY,
   });
 
@@ -59,7 +59,7 @@ export async function generateEmbedding(text: string) {
 
   const embeddings = new GoogleGenerativeAIEmbeddings({
     apiKey: process.env.GOOGLE_API_KEY,
-    model: "embedding-001",
+    model: "text-embedding-004", // Updated from embedding-001
     taskType: TaskType.RETRIEVAL_DOCUMENT,
   });
 
