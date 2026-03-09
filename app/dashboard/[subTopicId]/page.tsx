@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import IdeaCard from "@/components/IdeaCard";
 import IdeaForm from "@/components/IdeaForm";
-import { Plus, LayoutDashboard, ChevronRight } from "lucide-react";
+import { Plus } from "lucide-react";
 import clsx from "clsx";
 
 interface SubTopic {
@@ -105,42 +105,27 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-4 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-            <div>
-              <div className="flex items-center text-sm text-gray-500 mb-1">
-                <LayoutDashboard size={14} className="mr-1" />
-                <span>Dashboard</span>
-                <ChevronRight size={14} className="mx-1" />
-                <span className="font-medium text-gray-900">{theme.title}</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {currentSubTopic?.title || "Select a Topic"}
-              </h1>
-            </div>
-
-            {/* Sub-topics Navigation */}
-            <nav className="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-              {subTopics.map((st) => (
-                <button
-                  key={st.id}
-                  onClick={() => router.push(`/dashboard/${st.id}`)}
-                  className={clsx(
-                    "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
-                    subTopicId === st.id
-                      ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                      : "bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600"
-                  )}
-                >
-                  {st.title}
-                </button>
-              ))}
-            </nav>
-          </div>
+      {/* Sub-topics Navigation */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <nav className="flex items-center space-x-2 overflow-x-auto scrollbar-hide">
+            {subTopics.map((st) => (
+              <button
+                key={st.id}
+                onClick={() => router.push(`/dashboard/${st.id}`)}
+                className={clsx(
+                  "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                  subTopicId === st.id
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-200"
+                    : "bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600"
+                )}
+              >
+                {st.title}
+              </button>
+            ))}
+          </nav>
         </div>
-      </header>
+      </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {sortedIdeas.length === 0 ? (
