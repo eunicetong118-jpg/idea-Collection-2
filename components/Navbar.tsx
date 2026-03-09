@@ -29,15 +29,15 @@ export default function Navbar() {
   const isAdmin = user?.isAdmin;
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-lab-bg/80 backdrop-blur-md border-b border-lab-ui/20 h-16 transition-all font-mono">
+    <nav className="sticky top-0 z-50 w-full bg-lab-bg/60 backdrop-blur-lg border-b border-lab-ui/10 h-20 transition-all font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
         {/* Left: Branding */}
         <Link href="/" className="flex items-center space-x-3 group">
-          <div className="border border-lab-ui p-1 text-lab-ui group-hover:bg-lab-ui group-hover:text-lab-bg transition-colors">
-            <LayoutDashboard size={18} />
+          <div className="bg-lab-ui/40 p-2 rounded-full text-lab-text group-hover:bg-lab-ui transition-all">
+            <LayoutDashboard size={20} />
           </div>
-          <span className="text-sm font-black tracking-tighter uppercase text-lab-text group-hover:text-lab-ui transition-colors">
-            LAB // {theme.title.toUpperCase()}
+          <span className="text-lg font-semibold tracking-tight text-lab-text group-hover:text-lab-ui transition-colors">
+            {theme.title}
           </span>
         </Link>
 
@@ -49,10 +49,10 @@ export default function Navbar() {
                 <Link
                   href="/admin"
                   className={clsx(
-                    "hidden sm:flex items-center space-x-2 px-4 py-1 border border-lab-ui/30 text-[10px] uppercase font-bold tracking-widest transition-all",
+                    "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm shadow-paper-shadow text-[10px] uppercase font-bold tracking-widest transition-all",
                     pathname === "/admin"
                       ? "bg-lab-ui text-lab-bg"
-                      : "text-lab-ui hover:bg-lab-ui/10"
+                      : "bg-lab-ui/20 text-lab-ui hover:bg-lab-ui/30"
                   )}
                 >
                   <ShieldCheck size={14} />
@@ -60,12 +60,12 @@ export default function Navbar() {
                 </Link>
               )}
 
-              <div className="flex items-center space-x-3 pl-3 pr-1 py-1 border border-lab-ui/20 bg-lab-bg/40">
+              <div className="flex items-center space-x-3 pl-4 pr-1 py-1 rounded-full bg-lab-bg/40 shadow-sm shadow-paper-shadow border border-lab-ui/10">
                 <span className="hidden md:inline text-[10px] uppercase font-bold text-lab-text/60">
                   USR: {session.user?.name?.split(' ')[0]}
                 </span>
-                <div className="h-6 w-6 border border-lab-ui text-lab-ui flex items-center justify-center text-[10px] font-black">
-                  {session.user?.name?.charAt(0).toUpperCase() || <User size={10} />}
+                <div className="h-8 w-8 rounded-full bg-lab-ui/40 text-lab-text flex items-center justify-center text-xs font-bold">
+                  {session.user?.name?.charAt(0).toUpperCase() || <User size={14} />}
                 </div>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
@@ -79,7 +79,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => signIn()}
-              className="text-xs font-black uppercase tracking-tighter text-lab-ui hover:text-lab-text transition-colors border border-lab-ui/40 px-4 py-1 hover:bg-lab-ui/10"
+              className="text-xs font-bold uppercase tracking-widest text-lab-ui hover:text-lab-text transition-colors border border-lab-ui/40 px-6 py-2 rounded-full hover:bg-lab-ui/20 shadow-sm shadow-paper-shadow"
             >
               Initialize_Auth
             </button>
