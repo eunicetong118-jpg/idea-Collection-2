@@ -91,19 +91,25 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="h-12 w-12 bg-blue-200 rounded-full mb-4"></div>
-          <p className="text-gray-500 font-medium">Loading Dashboard...</p>
+      <div className="min-h-screen bg-lab-bg flex items-center justify-center">
+        <div className="w-48">
+          <div className="h-1 w-full bg-lab-ui/20 rounded-full overflow-hidden">
+            <div className="h-full bg-lab-ui animate-pulse w-full" />
+          </div>
+          <p className="text-[10px] uppercase tracking-[0.4em] opacity-40 mt-4 text-center text-lab-text">
+            Unfolding matrix...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-lab-bg text-lab-text pb-20 relative overflow-hidden">
+      <div className="fixed inset-0 paper-texture z-0" />
+
       {/* Sub-topics Navigation */}
-      <div className="bg-white border-b border-gray-200 sticky top-16 z-30">
+      <div className="sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex items-center space-x-2 overflow-x-auto scrollbar-hide">
             {subTopics.map((st) => (
@@ -111,10 +117,10 @@ export default function DashboardPage() {
                 key={st.id}
                 onClick={() => router.push(`/dashboard/${st.id}`)}
                 className={clsx(
-                  "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                  "px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
                   subTopicId === st.id
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                    : "bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-600"
+                    ? "bg-lab-ui text-lab-text shadow-md"
+                    : "text-lab-text/60 hover:bg-lab-ui/20"
                 )}
               >
                 {st.title}
@@ -124,14 +130,21 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        <header className="mb-12">
+          <div className="flex items-center space-x-4 mb-2">
+            <span className="text-[10px] uppercase tracking-[0.4em] opacity-40">ACTIVE_SECTOR</span>
+            <div className="h-[1px] w-12 bg-lab-ui/20" />
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-lab-text">Ideas Repository</h1>
+        </header>
         {sortedIdeas.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
-            <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <Plus size={32} className="text-gray-400" />
+          <div className="text-center py-20 bg-white/80 rounded-[2rem] shadow-xl shadow-paper-shadow">
+            <div className="mx-auto h-16 w-16 bg-lab-ui/20 rounded-full flex items-center justify-center mb-4">
+              <Plus size={32} className="text-lab-ui" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">No ideas yet</h2>
-            <p className="text-gray-500 max-w-xs mx-auto">
+            <h2 className="text-2xl font-bold text-lab-text mb-2 tracking-tight">No ideas yet</h2>
+            <p className="text-lab-text/60 max-w-xs mx-auto">
               Be the first to share an idea for {currentSubTopic?.title}!
             </p>
           </div>
@@ -147,25 +160,25 @@ export default function DashboardPage() {
       {/* Floating Add Button */}
       <button
         onClick={() => setShowAddModal(true)}
-        className="fixed bottom-8 right-8 h-14 w-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-40"
+        className="fixed bottom-8 right-8 h-14 w-14 bg-lab-ui text-lab-text rounded-full shadow-xl shadow-paper-shadow hover:bg-lab-ui/80 flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-40"
       >
         <Plus size={28} />
       </button>
 
       {/* Idea Form Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">Add New Idea</h2>
+        <div className="fixed inset-0 bg-lab-bg/95 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+          <div className="bg-white rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl shadow-paper-shadow animate-in zoom-in-95 duration-300 border-none">
+            <div className="p-8 flex justify-between items-center">
+              <h2 className="text-2xl font-bold tracking-tight text-lab-text">Add New Idea</h2>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-lab-text/40 hover:text-lab-text transition-colors"
               >
                 <Plus size={24} className="rotate-45" />
               </button>
             </div>
-            <div className="p-6">
+            <div className="px-8 pb-8">
               <IdeaForm subTopicId={subTopicId} onSuccess={handleIdeaSuccess} />
             </div>
           </div>
