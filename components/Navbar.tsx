@@ -36,7 +36,7 @@ export default function Navbar() {
           <div className="bg-lab-ui/40 p-2 rounded-full text-lab-text group-hover:bg-lab-ui transition-all">
             <LayoutDashboard size={20} />
           </div>
-          <span className="text-lg font-semibold tracking-tight text-lab-text group-hover:text-lab-ui transition-colors">
+          <span className="text-lg font-semibold tracking-normal text-lab-text group-hover:text-lab-ui transition-colors">
             {theme.title}
           </span>
         </Link>
@@ -60,7 +60,7 @@ export default function Navbar() {
                 </Link>
               )}
 
-              <div className="flex items-center space-x-3 pl-4 pr-1 py-1 rounded-full bg-lab-bg/40 shadow-sm shadow-paper-shadow border border-lab-ui/10">
+              <div className="flex items-center space-x-3 pl-4 pr-1 py-1 rounded-full bg-lab-ui/20 shadow-sm shadow-paper-shadow">
                 <span className="hidden md:inline text-[10px] uppercase font-bold text-lab-text/60">
                   USR: {session.user?.name?.split(' ')[0]}
                 </span>
