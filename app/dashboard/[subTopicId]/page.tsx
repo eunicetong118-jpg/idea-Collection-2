@@ -123,7 +123,7 @@ export default function DashboardPage() {
                     : "text-lab-text/60 hover:bg-lab-ui/20"
                 )}
               >
-                {st.title}
+                {st.title.replace(/\s+/g, '_').toUpperCase()}
               </button>
             ))}
           </nav>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {sortedIdeas.map((idea) => (
               <IdeaCard key={idea._id} idea={idea} />
             ))}
@@ -162,7 +162,7 @@ export default function DashboardPage() {
         onClick={() => setShowAddModal(true)}
         className="fixed bottom-8 right-8 h-14 w-14 bg-lab-ui text-lab-text rounded-full shadow-xl shadow-paper-shadow hover:bg-lab-ui/80 flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-40"
       >
-        <Plus size={28} />
+        <Plus size={24} />
       </button>
 
       {/* Idea Form Modal */}
@@ -181,6 +181,9 @@ export default function DashboardPage() {
             <div className="px-8 pb-8">
               <IdeaForm subTopicId={subTopicId} onSuccess={handleIdeaSuccess} />
             </div>
+            {/* Modal Corner Accents */}
+            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-lab-ui" />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-lab-ui" />
           </div>
         </div>
       )}

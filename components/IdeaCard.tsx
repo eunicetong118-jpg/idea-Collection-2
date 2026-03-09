@@ -194,7 +194,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             )}
           </div>
 
-          <form onSubmit={handleAddComment} className="relative">
+          <form onSubmit={handleAddComment} className="relative mt-4">
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
@@ -207,7 +207,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
               disabled={!newComment.trim() || submittingComment}
               className="absolute bottom-4 right-4 bg-lab-text text-lab-bg text-xs font-bold px-6 py-2 rounded-full hover:bg-lab-ui transition-colors disabled:opacity-30"
             >
-              {submittingComment ? "Posting..." : "Reply"}
+              {submittingComment ? "TRANSMITTING..." : "POST_LOG"}
             </button>
           </form>
         </div>

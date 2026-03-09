@@ -63,12 +63,13 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
   };
 
   return (
-    <div>
+    <div className="font-mono">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
         }}
+        className="space-y-6"
       >
         <div className="mb-6">
           <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 mb-2 block font-bold" htmlFor="title">
@@ -82,7 +83,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
             onChange={(e) => setTitle(e.target.value)}
             required
             disabled={loading}
-            placeholder="What's your idea?"
+            placeholder="ENTER_IDEA_TITLE..."
           />
         </div>
         <div className="mb-8">
@@ -96,7 +97,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
             onChange={(e) => setDescription(e.target.value)}
             required
             disabled={loading}
-            placeholder="Describe your idea in detail..."
+            placeholder="DESCRIBE_INTELLIGENCE_OBJECT..."
           />
         </div>
         <button
@@ -104,7 +105,8 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           className="rounded-full bg-lab-text text-lab-bg font-bold py-4 px-8 w-full disabled:opacity-30 hover:bg-lab-ui hover:text-white transition-all duration-300 shadow-lg shadow-paper-shadow"
           disabled={loading}
         >
-          {loading ? "Submitting..." : "Submit Idea"}
+          <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+          <span className="relative z-10">{loading ? "UPLOADING_SEQUENCE..." : "COMMIT_ENTRY"}</span>
         </button>
       </form>
 
@@ -131,20 +133,20 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
             <p className="text-lab-text mb-8 font-medium">
               Are you sure you still want to proceed?
             </p>
-            <div className="flex space-x-4">
+            <div className="flex gap-4">
               <button
                 onClick={() => handleSubmit(true)}
                 className="flex-1 bg-lab-text text-lab-bg font-bold py-4 px-6 rounded-full hover:bg-lab-ui transition-all duration-300"
                 disabled={loading}
               >
-                Yes, Proceed
+                PROCEED_BYPASS
               </button>
               <button
                 onClick={() => setShowSimilarityModal(false)}
                 className="flex-1 bg-lab-ui/10 text-lab-text font-bold py-4 px-6 rounded-full hover:bg-lab-ui/20 transition-all duration-300"
                 disabled={loading}
               >
-                No, Go Back
+                ABORT_SEQUENCE
               </button>
             </div>
           </div>
