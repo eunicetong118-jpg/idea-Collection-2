@@ -79,9 +79,9 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => signIn()}
-              className="text-xs font-bold uppercase tracking-widest text-lab-ui hover:text-lab-text transition-colors border border-lab-ui/40 px-6 py-2 rounded-full hover:bg-lab-ui/20 shadow-sm shadow-paper-shadow"
+              className="text-xs font-black uppercase tracking-widest bg-lab-ui text-lab-bg px-6 py-2 rounded-full shadow-sm shadow-paper-shadow hover:bg-lab-text transition-all active:scale-95"
             >
-              Initialize_Auth
+              Login
             </button>
           )}
         </div>

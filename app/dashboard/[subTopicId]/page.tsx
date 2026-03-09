@@ -15,7 +15,17 @@ interface SubTopic {
 interface Idea {
   _id: string;
   title: string;
-  description: string;
+  problem?: string;
+  solution?: string;
+  targetAudience?: string;
+  impact?: string;
+  risks?: string;
+  resources?: string;
+  revenue?: number;
+  department?: string;
+  country?: string;
+  fileBase64?: string;
+  description?: string;
   userId: string;
   userName: string;
   createdAt: string;
@@ -130,28 +140,36 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        <header className="mb-12">
-          <div className="flex items-center space-x-4 mb-2">
-            <span className="text-[10px] uppercase tracking-[0.4em] opacity-40">ACTIVE_SECTOR</span>
-            <div className="h-[1px] w-12 bg-lab-ui/20" />
+      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12 relative z-10">
+        <header className="mb-16 ink-reveal [animation-delay:200ms]">
+          <div className="flex items-center space-x-6 mb-3">
+            <span className="text-[10px] uppercase tracking-[0.5em] opacity-40 font-black">NODE : {currentSubTopic?.title.toUpperCase()}</span>
+            <div className="h-[1px] w-24 bg-lab-ui/30" />
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-lab-text">Ideas Repository</h1>
+          <h1 className="text-5xl font-bold tracking-tighter text-lab-text italic">
+            Knowledge_<span className="text-lab-ui">Repository</span>
+          </h1>
         </header>
         {sortedIdeas.length === 0 ? (
-          <div className="text-center py-20 bg-white/80 rounded-[2rem] shadow-xl shadow-paper-shadow">
-            <div className="mx-auto h-16 w-16 bg-lab-ui/20 rounded-full flex items-center justify-center mb-4">
-              <Plus size={32} className="text-lab-ui" />
+          <div className="text-center py-32 bg-white/60 rounded-[3rem] shadow-2xl shadow-paper-shadow ink-reveal [animation-delay:400ms]">
+            <div className="mx-auto h-20 w-20 bg-lab-ui/20 rounded-full flex items-center justify-center mb-6">
+              <Plus size={40} className="text-lab-ui" />
             </div>
-            <h2 className="text-2xl font-bold text-lab-text mb-2 tracking-tight">No ideas yet</h2>
-            <p className="text-lab-text/60 max-w-xs mx-auto">
-              Be the first to share an idea for {currentSubTopic?.title}!
+            <h2 className="text-3xl font-bold text-lab-text mb-3 tracking-tighter">Zero Matrix Nodes</h2>
+            <p className="text-lab-text/40 max-w-xs mx-auto text-sm uppercase tracking-widest">
+              Initialize first implementation sequence for {currentSubTopic?.title}.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {sortedIdeas.map((idea) => (
-              <IdeaCard key={idea._id} idea={idea} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {sortedIdeas.map((idea, index) => (
+              <div
+                key={idea._id}
+                className="ink-reveal"
+                style={{ animationDelay: `${400 + index * 100}ms` }}
+              >
+                <IdeaCard idea={idea} />
+              </div>
             ))}
           </div>
         )}
@@ -167,23 +185,26 @@ export default function DashboardPage() {
 
       {/* Idea Form Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-lab-bg/95 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
-          <div className="bg-white rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl shadow-paper-shadow animate-in zoom-in-95 duration-300 border-none">
-            <div className="p-8 flex justify-between items-center">
-              <h2 className="text-2xl font-bold tracking-tight text-lab-text">Add New Idea</h2>
+        <div className="fixed inset-0 bg-lab-bg/95 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-300 overflow-y-auto">
+          <div className="bg-white rounded-[2rem] w-full max-w-4xl my-8 overflow-hidden shadow-2xl shadow-paper-shadow animate-in zoom-in-95 duration-300 border-none relative">
+            <div className="p-8 sticky top-0 bg-white z-10 flex justify-between items-center border-b border-lab-ui/10">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-lab-text">New_Intelligence_Entry</h2>
+                <p className="text-[10px] uppercase tracking-[0.3em] opacity-40 font-bold mt-1">Initialize collective synchronization sequence</p>
+              </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-lab-text/40 hover:text-lab-text transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-lab-ui/10 text-lab-text/40 hover:bg-lab-ui hover:text-lab-text transition-all"
               >
                 <Plus size={24} className="rotate-45" />
               </button>
             </div>
-            <div className="px-8 pb-8">
+            <div className="p-10 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
               <IdeaForm subTopicId={subTopicId} onSuccess={handleIdeaSuccess} />
             </div>
             {/* Modal Corner Accents */}
-            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-lab-ui" />
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-lab-ui" />
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-lab-ui/20 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-lab-ui/20 pointer-events-none" />
           </div>
         </div>
       )}

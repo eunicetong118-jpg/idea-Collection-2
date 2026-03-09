@@ -1,7 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Toast, { ToastType } from "./Toast";
+import { Upload, X, Loader2 } from "lucide-react";
+
+interface Department {
+  id: string;
+  name: string;
+}
+
+interface Country {
+  id: string;
+  name: string;
+}
 
 interface IdeaFormProps {
   subTopicId: string;
@@ -10,11 +21,70 @@ interface IdeaFormProps {
 
 export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [problem, setProblem] = useState("");
+  const [solution, setSolution] = useState("");
+  const [targetAudience, setTargetAudience] = useState("");
+  const [impact, setImpact] = useState("Low");
+  const [risks, setRisks] = useState("");
+  const [resources, setResources] = useState("");
+  const [revenue, setRevenue] = useState("");
+  const [department, setDepartment] = useState("");
+  const [country, setCountry] = useState("");
+  const [fileBase64, setFileBase64] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(false);
+  const [fetchingData, setFetchingData] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [showSimilarityModal, setShowSimilarityModal] = useState(false);
   const [similarIdea, setSimilarIdea] = useState<{ title: string; description: string } | null>(null);
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [depsRes, countriesRes] = await Promise.all([
+          fetch("/api/admin/departments"),
+          fetch("/api/admin/countries")
+        ]);
+        if (depsRes.ok) setDepartments(await depsRes.json());
+        if (countriesRes.ok) setCountries(await countriesRes.json());
+      } catch (error) {
+        console.error("Error fetching form data:", error);
+      } finally {
+        setFetchingData(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        showToast("File size must be less than 2MB", "error");
+        return;
+      }
+
+      setFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFileBase64(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeFile = () => {
+    setFileBase64(null);
+    setFileName(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const showToast = (message: string, type: ToastType) => {
     setToast({ message, type });
@@ -31,7 +101,16 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
         },
         body: JSON.stringify({
           title,
-          description,
+          problem,
+          solution,
+          targetAudience,
+          impact,
+          risks,
+          resources,
+          revenue: parseFloat(revenue) || 0,
+          department,
+          country,
+          fileBase64,
           subTopicId,
           force,
         }),
@@ -50,8 +129,23 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
         throw new Error(data.error || "Failed to submit idea");
       }
 
+      // Reset all fields
       setTitle("");
-      setDescription("");
+      setProblem("");
+      setSolution("");
+      setTargetAudience("");
+      setImpact("Low");
+      setRisks("");
+      setResources("");
+      setRevenue("");
+      setDepartment("");
+      setCountry("");
+      setFileBase64(null);
+      setFileName(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
       setShowSimilarityModal(false);
       if (onSuccess) onSuccess();
       showToast("Idea submitted successfully!", "success");
@@ -69,16 +163,17 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           e.preventDefault();
           handleSubmit();
         }}
-        className="space-y-6"
+        className="space-y-8 ink-reveal"
       >
-        <div className="mb-6">
-          <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 mb-2 block font-bold" htmlFor="title">
+        {/* Row 1: Title */}
+        <div className="space-y-2">
+          <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="title">
             Title
           </label>
           <input
             id="title"
             type="text"
-            className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none transition-all placeholder:text-lab-text/20"
+            className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20 font-bold"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
@@ -86,32 +181,228 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
             placeholder="ENTER_IDEA_TITLE..."
           />
         </div>
-        <div className="mb-8">
-          <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 mb-2 block font-bold" htmlFor="description">
-            Description
-          </label>
-          <textarea
-            id="description"
-            className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none transition-all h-40 resize-none placeholder:text-lab-text/20"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            disabled={loading}
-            placeholder="DESCRIBE_INTELLIGENCE_OBJECT..."
-          />
+
+        {/* Row 2: Problem & Solution */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="problem">
+              Problem
+            </label>
+            <textarea
+              id="problem"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all h-32 resize-none placeholder:text-lab-text/20"
+              value={problem}
+              onChange={(e) => setProblem(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="DESCRIBE_THE_ISSUE..."
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="solution">
+              Solution
+            </label>
+            <textarea
+              id="solution"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all h-32 resize-none placeholder:text-lab-text/20"
+              value={solution}
+              onChange={(e) => setSolution(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="PROPOSE_THE_RESOLUTION..."
+            />
+          </div>
         </div>
+
+        {/* Row 3: Target Audience & Risks */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="targetAudience">
+              Target Audience
+            </label>
+            <textarea
+              id="targetAudience"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all h-32 resize-none placeholder:text-lab-text/20"
+              value={targetAudience}
+              onChange={(e) => setTargetAudience(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="WHO_BENEFITS..."
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="risks">
+              Risks
+            </label>
+            <textarea
+              id="risks"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all h-32 resize-none placeholder:text-lab-text/20"
+              value={risks}
+              onChange={(e) => setRisks(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="POTENTIAL_FAILURES..."
+            />
+          </div>
+        </div>
+
+        {/* Row 4: Resources & Revenue */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="resources">
+              Resources
+            </label>
+            <textarea
+              id="resources"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all h-32 resize-none placeholder:text-lab-text/20"
+              value={resources}
+              onChange={(e) => setResources(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="REQUIRED_ASSETS..."
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="revenue">
+              Potential Revenue (USD)
+            </label>
+            <input
+              id="revenue"
+              type="number"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20 font-bold"
+              value={revenue}
+              onChange={(e) => setRevenue(e.target.value)}
+              required
+              disabled={loading}
+              placeholder="ESTIMATED_VALUE..."
+            />
+          </div>
+        </div>
+
+        {/* Row 5: Department, Country & Impact */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="department">
+              Department
+            </label>
+            <select
+              id="department"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all font-bold appearance-none cursor-pointer"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              required
+              disabled={loading || fetchingData}
+            >
+              <option value="" disabled>SELECT_DEPT...</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.name}>{d.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="country">
+              Country
+            </label>
+            <select
+              id="country"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all font-bold appearance-none cursor-pointer"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+              disabled={loading || fetchingData}
+            >
+              <option value="" disabled>SELECT_COUNTRY...</option>
+              {countries.map((c) => (
+                <option key={c.id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="impact">
+              Impact
+            </label>
+            <select
+              id="impact"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all font-bold appearance-none cursor-pointer"
+              value={impact}
+              onChange={(e) => setImpact(e.target.value)}
+              required
+              disabled={loading}
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Row 6: File Upload */}
+        <div className="space-y-2">
+          <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold">
+            Supporting Image (Max 2MB)
+          </label>
+          <div className="relative group/upload">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              className="hidden"
+              disabled={loading}
+            />
+            {!fileBase64 ? (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={loading}
+                className="w-full border-2 border-dashed border-lab-ui/30 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-lab-ui/5 hover:border-lab-ui/50 transition-all group"
+              >
+                <Upload size={32} className="text-lab-ui/40 group-hover:text-lab-ui transition-colors" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-lab-text/40">ATTACH_VISUAL_ASSET</span>
+              </button>
+            ) : (
+              <div className="relative rounded-2xl overflow-hidden border border-lab-ui/20 bg-lab-ui/5 p-4 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-lab-ui/20">
+                    <img src={fileBase64} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                  <span className="text-sm font-bold text-lab-text truncate max-w-[200px]">{fileName}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={removeFile}
+                  className="p-2 hover:bg-red-500/10 text-red-500 rounded-full transition-all"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
         <button
           type="submit"
-          className="rounded-full bg-lab-text text-lab-bg font-bold py-4 px-8 w-full disabled:opacity-30 hover:bg-lab-ui hover:text-white transition-all duration-300 shadow-lg shadow-paper-shadow"
+          className="rounded-full bg-lab-text text-lab-bg font-bold py-5 px-8 w-full disabled:opacity-30 hover:bg-lab-ui hover:text-lab-text transition-all duration-300 shadow-xl shadow-paper-shadow relative overflow-hidden group/btn"
           disabled={loading}
         >
-          <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
-          <span className="relative z-10">{loading ? "UPLOADING_SEQUENCE..." : "COMMIT_ENTRY"}</span>
+          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
+          <span className="relative z-10 flex items-center justify-center gap-2">
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                <span>UPLOADING_SEQUENCE...</span>
+              </>
+            ) : (
+              "COMMIT_INTELLIGENCE_ENTRY"
+            )}
+          </span>
         </button>
       </form>
 
       {toast && (
         <Toast
+          key={toast.message + Date.now()}
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}

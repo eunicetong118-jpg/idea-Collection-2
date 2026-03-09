@@ -23,10 +23,10 @@ export default function Toast({ message, type, onClose, duration = 3000 }: Toast
   }, [duration, onClose]);
 
   return (
-    <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-8 duration-300">
+    <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[9999] animate-in fade-in slide-in-from-bottom-8 duration-300 pointer-events-none">
       <div
         className={clsx(
-          "flex items-center gap-4 px-8 py-5 rounded-full shadow-2xl border-none min-w-[320px] shadow-paper-shadow",
+          "flex items-center gap-4 px-8 py-5 rounded-full shadow-2xl border-none min-w-[320px] shadow-paper-shadow pointer-events-auto",
           type === "success"
             ? "bg-white text-emerald-900"
             : "bg-white text-red-900"

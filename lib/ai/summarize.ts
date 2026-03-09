@@ -1,17 +1,12 @@
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatOllama } from "@langchain/ollama";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
 export async function generateSummary(title: string, description: string): Promise<string> {
-  if (!process.env.GOOGLE_API_KEY) {
-    console.warn("GOOGLE_API_KEY is not set. Skipping summarization.");
-    return "Summarization unavailable (missing API key).";
-  }
-
-  const model = new ChatGoogleGenerativeAI({
-    apiKey: process.env.GOOGLE_API_KEY,
-    model: "gemini-1.5-flash",
+  const model = new ChatOllama({
+    model: "llama3.2:latest",
     temperature: 0,
+    baseUrl: "http://localhost:11434",
   });
 
   const prompt = PromptTemplate.fromTemplate(`
@@ -33,8 +28,8 @@ export async function generateSummary(title: string, description: string): Promi
       description: description,
     });
     return summary.trim();
-  } catch (error) {
-    console.error("Error generating summary:", error);
-    return "Failed to generate summary.";
+  } catch (error: any) {
+    console.error("Error generating summary (Local Ollama):", error.message || error);
+    return "Failed to generate summary with local LLM.";
   }
 }

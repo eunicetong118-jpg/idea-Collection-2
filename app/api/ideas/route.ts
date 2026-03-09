@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
-import { getDb } from "@/lib/mongodb";
+import { authOptions } from "../../../lib/auth";
+import { getDb } from "../../../lib/mongodb";
 import { checkSimilarity, generateEmbedding } from "@/lib/ai/similarity";
 import { generateSummary } from "@/lib/ai/summarize";
 
@@ -34,14 +34,28 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { title, description, subTopicId, force } = await request.json();
+    const {
+      title,
+      problem,
+      solution,
+      targetAudience,
+      impact,
+      risks,
+      resources,
+      revenue,
+      department,
+      country,
+      fileBase64,
+      subTopicId,
+      force
+    } = await request.json();
 
-    if (!title || !description || !subTopicId) {
+    if (!title || !problem || !solution || !subTopicId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Combine title and description for similarity check
-    const combinedText = `${title}\n${description}`;
+    // Combine relevant text fields for similarity check
+    const combinedText = `${title}\n${problem}\n${solution}\n${targetAudience}`;
 
     // If not forced (user hasn't confirmed after a similarity warning), check similarity
     if (!force) {
@@ -51,7 +65,7 @@ export async function POST(request: NextRequest) {
           error: "Similar idea exists",
           similarIdea: {
             title: similarIdea.title,
-            description: similarIdea.description,
+            description: similarIdea.description || similarIdea.problem, // fallback to problem if description doesn't exist
             score: similarIdea.score
           }
         }, { status: 409 });
@@ -60,14 +74,23 @@ export async function POST(request: NextRequest) {
 
     // Generate embedding for the new idea
     const embedding = await generateEmbedding(combinedText);
-    // Generate summary for the new idea
-    const summary = await generateSummary(title, description);
+    // Generate summary for the new idea (using title and problem/solution)
+    const summary = await generateSummary(title, `${problem}\n${solution}`);
 
     const db = await getDb();
 
     const newIdea = {
       title,
-      description,
+      problem,
+      solution,
+      targetAudience,
+      impact,
+      risks,
+      resources,
+      revenue,
+      department,
+      country,
+      fileBase64,
       subTopicId,
       userId: session.user.email,
       userName: session.user.name || "Anonymous",

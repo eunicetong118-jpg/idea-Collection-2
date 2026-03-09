@@ -13,6 +13,7 @@
     "@langchain/community": "^1.1.22",
     "@langchain/core": "^1.1.31",
     "@langchain/google-genai": "^2.1.24",
+    "@langchain/ollama": "^1.2.6",
     "@langchain/openai": "^1.2.12",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getDb } from "@/lib/mongodb";
+import { authOptions } from "../../../../../lib/auth";
+import { getDb } from "../../../../../lib/mongodb";
 import { generateSummary } from "@/lib/ai/summarize";
 import { ObjectId } from "mongodb";
 
