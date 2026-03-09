@@ -111,84 +111,84 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
   return (
     <div
       className={clsx(
-        "bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all",
+        "bg-white/80 rounded-[2rem] p-8 shadow-xl shadow-paper-shadow border-none hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden",
         isDone && "opacity-60 grayscale-[0.5]"
       )}
     >
-      {/* Status Bar */}
-      <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-          {idea.stage} : {idea.stage_status}
-        </span>
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex items-center space-x-2">
+          <div className={clsx(
+            "w-2 h-2 rounded-full",
+            isDone ? "bg-green-500" : "bg-lab-ui"
+          )} />
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-lab-text opacity-40">
+            {idea.stage} : {idea.stage_status}
+          </span>
+        </div>
         {isDone && (
-          <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded-full font-bold">
+          <span className="bg-green-500/10 text-green-700 text-[10px] px-3 py-1 rounded-full font-bold">
             COMPLETED
           </span>
         )}
       </div>
 
-      <div className="p-5">
-        <h3 className="text-lg font-bold text-gray-900 mb-2">{idea.title}</h3>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3 whitespace-pre-wrap">
+      <div>
+        <h3 className="text-2xl font-bold tracking-tight text-lab-text mb-4 font-sans">{idea.title}</h3>
+        <p className="text-lab-text/70 text-base mb-8 line-clamp-3 whitespace-pre-wrap leading-relaxed">
           {idea.description}
         </p>
 
-        <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-          <div className="flex items-center">
-            <User size={14} className="mr-1" />
-            <span>{idea.userName}</span>
-          </div>
-          <div className="flex items-center">
-            <Calendar size={14} className="mr-1" />
-            <span>{new Date(idea.createdAt).toLocaleDateString()}</span>
-          </div>
+        <div className="flex items-center justify-between text-sm font-sans opacity-40 mb-8">
+          <span>{idea.userName}</span>
+          <span>{new Date(idea.createdAt).toLocaleDateString()}</span>
         </div>
 
-        <div className="flex items-center space-x-6 border-t border-gray-50 pt-4">
+        <div className="flex items-center space-x-4">
           <button
             onClick={toggleLike}
             className={clsx(
-              "flex items-center space-x-2 transition-colors",
-              hasLiked ? "text-blue-600" : "text-gray-500 hover:text-blue-600"
+              "flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 shadow-sm hover:shadow-md",
+              hasLiked ? "bg-lab-ui/20 text-lab-text" : "bg-gray-100/50 text-gray-400 hover:bg-lab-ui/20 hover:text-lab-text"
             )}
           >
-            <ThumbsUp size={18} fill={hasLiked ? "currentColor" : "none"} />
-            <span className="font-medium">{likes.length}</span>
+            <ThumbsUp size={20} fill={hasLiked ? "currentColor" : "none"} />
           </button>
 
           <button
             onClick={() => setShowComments(!showComments)}
             className={clsx(
-              "flex items-center space-x-2 transition-colors",
-              showComments ? "text-blue-600" : "text-gray-500 hover:text-blue-600"
+              "flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 shadow-sm hover:shadow-md",
+              showComments ? "bg-lab-ui/20 text-lab-text" : "bg-gray-100/50 text-gray-400 hover:bg-lab-ui/20 hover:text-lab-text"
             )}
           >
-            <MessageSquare size={18} />
-            <span className="font-medium">{commentCount}</span>
+            <MessageSquare size={20} />
           </button>
+
+          <div className="flex-1 flex justify-end items-center space-x-4 text-sm font-medium text-lab-text opacity-40">
+            <span>{likes.length} Likes</span>
+            <span>{commentCount} Comments</span>
+          </div>
         </div>
       </div>
 
       {/* Comments Section */}
       {showComments && (
-        <div className="bg-gray-50 border-t border-gray-100 p-5 animate-in slide-in-from-top duration-200">
-          <h4 className="text-sm font-bold text-gray-700 mb-4">Comments</h4>
-
-          <div className="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2">
+        <div className="mt-8 pt-8 border-t border-lab-text/5 animate-in slide-in-from-top duration-200">
+          <div className="space-y-6 mb-8 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
             {loadingComments ? (
-              <p className="text-xs text-gray-500 italic">Loading comments...</p>
+              <p className="text-sm text-lab-text/40 italic">Loading comments...</p>
             ) : comments.length === 0 ? (
-              <p className="text-xs text-gray-500 italic">No comments yet. Be the first to reply!</p>
+              <p className="text-sm text-lab-text/40 italic">No comments yet. Be the first to reply!</p>
             ) : (
               comments.map((comment, index) => (
-                <div key={index} className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-bold text-gray-800">{comment.userName}</span>
-                    <span className="text-[10px] text-gray-400">
+                <div key={index} className="pb-6 border-b border-lab-text/5 last:border-none">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-bold text-lab-text">{comment.userName}</span>
+                    <span className="text-xs text-lab-text/40 font-sans">
                       {new Date(comment.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600">{comment.content}</p>
+                  <p className="text-sm text-lab-text/70 leading-relaxed font-sans">{comment.content}</p>
                 </div>
               ))
             )}
@@ -199,13 +199,13 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Write a reply..."
-              className="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none h-20"
+              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-sm focus:outline-none transition-all resize-none h-24 text-lab-text placeholder:text-lab-text/30 font-sans"
               disabled={submittingComment}
             />
             <button
               type="submit"
               disabled={!newComment.trim() || submittingComment}
-              className="absolute bottom-3 right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              className="absolute bottom-4 right-4 bg-lab-text text-lab-bg text-xs font-bold px-6 py-2 rounded-full hover:bg-lab-ui transition-colors disabled:opacity-30"
             >
               {submittingComment ? "Posting..." : "Reply"}
             </button>

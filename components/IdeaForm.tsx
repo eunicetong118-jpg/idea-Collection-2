@@ -70,14 +70,14 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           handleSubmit();
         }}
       >
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+        <div className="mb-6">
+          <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 mb-2 block font-bold" htmlFor="title">
             Title
           </label>
           <input
             id="title"
             type="text"
-            className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-black leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none transition-all placeholder:text-lab-text/20"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
@@ -85,13 +85,13 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
             placeholder="What's your idea?"
           />
         </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+        <div className="mb-8">
+          <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 mb-2 block font-bold" htmlFor="description">
             Description
           </label>
           <textarea
             id="description"
-            className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-black leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 h-40 resize-none"
+            className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none transition-all h-40 resize-none placeholder:text-lab-text/20"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
@@ -101,7 +101,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
         </div>
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full disabled:bg-blue-300 transition-colors shadow-lg shadow-blue-100"
+          className="rounded-full bg-lab-text text-lab-bg font-bold py-4 px-8 w-full disabled:opacity-30 hover:bg-lab-ui hover:text-white transition-all duration-300 shadow-lg shadow-paper-shadow"
           disabled={loading}
         >
           {loading ? "Submitting..." : "Submit Idea"}
@@ -118,30 +118,30 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
 
       {/* Similarity Modal */}
       {showSimilarityModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-bold text-red-600 mb-2">Similar Idea Found!</h3>
-            <p className="text-gray-700 mb-4">
-              Your idea seems very similar to an existing one:
+        <div className="fixed inset-0 bg-lab-text/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-[2rem] p-10 max-w-xl w-full shadow-2xl shadow-paper-shadow border-none animate-in zoom-in-95 duration-200">
+            <h3 className="text-2xl font-bold text-lab-text mb-4">Similar Idea Found</h3>
+            <p className="text-lab-text/60 mb-6 leading-relaxed">
+              We found an existing idea that seems very similar to yours. Would you like to proceed or refine your idea?
             </p>
-            <div className="bg-gray-100 p-3 rounded mb-4 border-l-4 border-yellow-500">
-              <h4 className="font-bold">{similarIdea?.title}</h4>
-              <p className="text-sm text-gray-600 line-clamp-3">{similarIdea?.description}</p>
+            <div className="bg-lab-ui/5 rounded-2xl p-6 mb-8 border border-lab-ui/10">
+              <h4 className="font-bold text-lab-text mb-2 text-lg">{similarIdea?.title}</h4>
+              <p className="text-sm text-lab-text/50 line-clamp-4 leading-relaxed">{similarIdea?.description}</p>
             </div>
-            <p className="text-gray-700 mb-6 font-medium">
+            <p className="text-lab-text mb-8 font-medium">
               Are you sure you still want to proceed?
             </p>
             <div className="flex space-x-4">
               <button
                 onClick={() => handleSubmit(true)}
-                className="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="flex-1 bg-lab-text text-lab-bg font-bold py-4 px-6 rounded-full hover:bg-lab-ui transition-all duration-300"
                 disabled={loading}
               >
                 Yes, Proceed
               </button>
               <button
                 onClick={() => setShowSimilarityModal(false)}
-                className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+                className="flex-1 bg-lab-ui/10 text-lab-text font-bold py-4 px-6 rounded-full hover:bg-lab-ui/20 transition-all duration-300"
                 disabled={loading}
               >
                 No, Go Back
