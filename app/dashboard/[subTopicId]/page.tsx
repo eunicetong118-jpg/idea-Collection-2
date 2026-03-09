@@ -31,7 +31,6 @@ export default function DashboardPage() {
   const router = useRouter();
   const subTopicId = params.subTopicId as string;
 
-  const [theme, setTheme] = useState<{ title: string }>({ title: "" });
   const [subTopics, setSubTopics] = useState<SubTopic[]>([]);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,13 +41,11 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [themeRes, subTopicsRes, ideasRes] = await Promise.all([
-          fetch("/api/admin/theme"),
+        const [subTopicsRes, ideasRes] = await Promise.all([
           fetch("/api/admin/subtopics"),
           fetch(`/api/ideas?subTopicId=${subTopicId}`),
         ]);
 
-        if (themeRes.ok) setTheme(await themeRes.json());
         if (subTopicsRes.ok) setSubTopics(await subTopicsRes.json());
         if (ideasRes.ok) setIdeas(await ideasRes.json());
       } catch (error) {
@@ -106,7 +103,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Sub-topics Navigation */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
+      <div className="bg-white border-b border-gray-200 sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex items-center space-x-2 overflow-x-auto scrollbar-hide">
             {subTopics.map((st) => (

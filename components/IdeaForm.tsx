@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Toast, { ToastType } from "./Toast";
 
 interface IdeaFormProps {
   subTopicId: string;
@@ -11,13 +12,16 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [showSimilarityModal, setShowSimilarityModal] = useState(false);
   const [similarIdea, setSimilarIdea] = useState<{ title: string; description: string } | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+
+  const showToast = (message: string, type: ToastType) => {
+    setToast({ message, type });
+  };
 
   const handleSubmit = async (force = false) => {
     setLoading(true);
-    setError(null);
 
     try {
       const response = await fetch("/api/ideas", {
@@ -50,9 +54,9 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
       setDescription("");
       setShowSimilarityModal(false);
       if (onSuccess) onSuccess();
-      alert("Idea submitted successfully!");
+      showToast("Idea submitted successfully!", "success");
     } catch (err: any) {
-      setError(err.message);
+      showToast(err.message, "error");
     } finally {
       setLoading(false);
     }
@@ -73,7 +77,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <input
             id="title"
             type="text"
-            className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-black leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
@@ -87,7 +91,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           </label>
           <textarea
             id="description"
-            className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 h-40 resize-none"
+            className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-black leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 h-40 resize-none"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
@@ -95,7 +99,6 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
             placeholder="Describe your idea in detail..."
           />
         </div>
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <button
           type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline w-full disabled:bg-blue-300 transition-colors shadow-lg shadow-blue-100"
@@ -104,6 +107,14 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           {loading ? "Submitting..." : "Submit Idea"}
         </button>
       </form>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
 
       {/* Similarity Modal */}
       {showSimilarityModal && (

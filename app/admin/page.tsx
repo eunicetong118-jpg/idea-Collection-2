@@ -3,7 +3,8 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Trash2, Edit2, Plus, Info } from "lucide-react";
+import { Trash2, Edit2, Plus, Info, ShieldCheck } from "lucide-react";
+import Toast, { ToastType } from "../../components/Toast";
 
 interface SubTopic {
   id: string;
@@ -27,6 +28,11 @@ export default function AdminPage() {
   const [editingSubTopic, setEditingSubTopic] = useState<SubTopic | null>(null);
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [hoveredSummary, setHoveredSummary] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+
+  const showToast = (message: string, type: ToastType) => {
+    setToast({ message, type });
+  };
 
   useEffect(() => {
     if (status === "unauthenticated" || (status === "authenticated" && !(session?.user as any)?.isAdmin)) {
@@ -73,7 +79,9 @@ export default function AdminPage() {
       body: JSON.stringify({ title: mainTheme }),
     });
     if (res.ok) {
-      alert("Theme updated!");
+      showToast("Theme updated successfully!", "success");
+    } else {
+      showToast("Failed to update theme.", "error");
     }
   };
 
@@ -87,6 +95,9 @@ export default function AdminPage() {
     if (res.ok) {
       setNewSubTopic("");
       fetchSubTopics();
+      showToast("Sub-topic added!", "success");
+    } else {
+      showToast("Failed to add sub-topic.", "error");
     }
   };
 
@@ -97,6 +108,9 @@ export default function AdminPage() {
     });
     if (res.ok) {
       fetchSubTopics();
+      showToast("Sub-topic deleted.", "success");
+    } else {
+      showToast("Failed to delete sub-topic.", "error");
     }
   };
 
@@ -114,6 +128,9 @@ export default function AdminPage() {
     if (res.ok) {
       setEditingSubTopic(null);
       fetchSubTopics();
+      showToast("Sub-topic updated!", "success");
+    } else {
+      showToast("Failed to save changes.", "error");
     }
   };
 
@@ -268,6 +285,14 @@ export default function AdminPage() {
           )}
         </section>
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
