@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../../../lib/auth";
+import { getToken } from "next-auth/jwt";
 import { getDb } from "../../../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 
@@ -9,16 +8,12 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token || !token.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const userEmail = session.user.email;
-  if (!userEmail) {
-    return NextResponse.json({ error: "User email not found" }, { status: 400 });
-  }
-
+  const userEmail = token.email;
   try {
     const db = await getDb();
 

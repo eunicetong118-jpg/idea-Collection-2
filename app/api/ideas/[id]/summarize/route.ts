@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../../../lib/auth";
+import { getToken } from "next-auth/jwt";
 import { getDb } from "../../../../../lib/mongodb";
 import { generateSummary } from "@/lib/ai/summarize";
 import { ObjectId } from "mongodb";
 
-// Only admins should be able to trigger manual summarization
-// For simplicity, we check if the user is logged in first.
-// The design doc mentions admins are identified via a hardcoded email list in env variables.
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -28,7 +24,11 @@ export async function POST(
       return NextResponse.json({ error: "Idea not found" }, { status: 404 });
     }
 
-    const summary = await generateSummary(idea.title, idea.description);
+    const contentToSummarize = idea.problem && idea.solution
+      ? `${idea.problem}\n${idea.solution}`
+      : (idea.problem || idea.description || "");
+
+    const summary = await generateSummary(idea.title, contentToSummarize);
 
     await db.collection("ideas").updateOne(
       { _id: new ObjectId(id) },

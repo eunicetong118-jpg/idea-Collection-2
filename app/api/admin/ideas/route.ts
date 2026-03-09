@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/auth";
-import { getDb } from "../../../lib/mongodb";
+import { getToken } from "next-auth/jwt";
+import { getDb } from "../../../../lib/mongodb";
+
+async function checkAdmin(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const email = token?.email || "";
+  const adminEmails = (process.env.ADMIN_EMAILS || "").split(",");
+  return !!token && adminEmails.includes(email);
+}
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  // Basic admin check - in a real app this would be more robust
-  if (!session || !session.user || !(session.user as any).isAdmin) {
+  if (!(await checkAdmin(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

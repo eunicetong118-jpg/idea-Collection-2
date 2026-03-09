@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { authOptions } from "../../../../lib/auth";
 import { getDb } from "../../../../lib/mongodb";
+
+async function checkAdmin(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const email = token?.email || "";
+  const adminEmails = (process.env.ADMIN_EMAILS || "").split(",");
+  return !!token && adminEmails.includes(email);
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,19 +27,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!(await checkAdmin(request))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-    // Re-calculate isAdmin from token (logic from lib/auth.ts)
-    const email = token?.email || "";
-    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",");
-    const isAdmin = adminEmails.includes(email);
-
-    if (!token || !isAdmin) {
-      console.error("POST Unauthorized: Token:", !!token, "isAdmin:", isAdmin);
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const body = await request.json();
     const { title } = body;
 

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/auth";
+import { getToken } from "next-auth/jwt";
 import { getDb } from "../../../lib/mongodb";
 import { checkSimilarity, generateEmbedding } from "@/lib/ai/similarity";
 import { generateSummary } from "@/lib/ai/summarize";
@@ -28,8 +27,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session || !session.user || !session.user.email) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+  if (!token || !token.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -92,8 +91,8 @@ export async function POST(request: NextRequest) {
       country,
       fileBase64,
       subTopicId,
-      userId: session.user.email,
-      userName: session.user.name || "Anonymous",
+      userId: token.email,
+      userName: token.name || "Anonymous",
       createdAt: new Date(),
       lastActivityAt: new Date(),
       embedding: embedding,
