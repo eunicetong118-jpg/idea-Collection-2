@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #43302E;
-  --foreground: #FFF1B5;
+  --background: #FFF1B5;
+  --foreground: #43302E;
   --lab-ui: #C1DBE8;
-  --lab-bg: #43302E;
-  --lab-text: #FFF1B5;
+  --lab-bg: #FFF1B5;
+  --lab-text: #43302E;
+  --paper-shadow: rgba(67, 48, 46, 0.08);
 }
 
 @theme inline {
@@ -14,39 +15,15 @@
   --color-lab-ui: var(--lab-ui);
   --color-lab-bg: var(--lab-bg);
   --color-lab-text: var(--lab-text);
+  --color-paper-shadow: var(--paper-shadow);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  --animate-flicker: flicker 0.15s infinite;
-  --animate-scanline: scanline 8s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
 
-  @keyframes flicker {
-    0% { opacity: 0.97; }
-    5% { opacity: 0.95; }
-    10% { opacity: 0.9; }
-    15% { opacity: 0.95; }
-    20% { opacity: 0.98; }
-    25% { opacity: 0.95; }
-    30% { opacity: 0.9; }
-    35% { opacity: 0.95; }
-    40% { opacity: 0.98; }
-    45% { opacity: 1; }
-    50% { opacity: 0.98; }
-    55% { opacity: 0.95; }
-    60% { opacity: 0.9; }
-    65% { opacity: 0.95; }
-    70% { opacity: 0.98; }
-    75% { opacity: 0.95; }
-    80% { opacity: 0.9; }
-    85% { opacity: 0.95; }
-    90% { opacity: 0.98; }
-    95% { opacity: 0.99; }
-    100% { opacity: 1; }
-  }
-
-  @keyframes scanline {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
   }
 }
 
@@ -58,69 +35,13 @@ body {
   overflow-x: hidden;
 }
 
-/* CRT Effects */
-body::before {
-  content: " ";
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-    linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-  z-index: 100;
-  background-size: 100% 4px, 3px 100%;
-  pointer-events: none;
-}
-
-body::after {
-  content: " ";
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(18, 16, 16, 0.1);
-  opacity: 0;
-  z-index: 100;
-  pointer-events: none;
-  animation: flicker 0.15s infinite;
-}
-
-.crt-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(193, 219, 232, 0.03) 50%,
-    transparent 100%
-  );
-  background-size: 100% 20px;
-  animation: scanline 10s linear infinite;
-  pointer-events: none;
-  z-index: 101;
-}
-
 .glass-panel {
-  background: rgba(193, 219, 232, 0.05);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(193, 219, 232, 0.2);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: var(--background);
+  box-shadow: 0 10px 30px var(--paper-shadow);
 }
 
-.terminal-border {
-  border: 1px solid var(--lab-ui);
-  box-shadow: 0 0 10px rgba(193, 219, 232, 0.2);
-}
-
-.tech-noise {
+.paper-texture {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.05;
+  opacity: 0.04;
   pointer-events: none;
 }
