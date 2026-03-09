@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { getDb } from "../../../lib/mongodb";
+import { getDb } from "@/lib/mongodb";
 import { checkSimilarity, generateEmbedding } from "@/lib/ai/similarity";
 import { generateSummary } from "@/lib/ai/summarize";
 
