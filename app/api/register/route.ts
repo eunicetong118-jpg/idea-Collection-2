@@ -3,8 +3,11 @@ import { getDb } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 
 export async function POST(request: NextRequest) {
+  console.log("Registration API hit");
   try {
-    const { email, password, name } = await request.json();
+    const body = await request.json();
+    console.log("Registration body:", { ...body, password: "[REDACTED]" });
+    const { email, password, name } = body;
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -31,8 +34,12 @@ export async function POST(request: NextRequest) {
     const result = await db.collection("users").insertOne(newUser);
 
     return NextResponse.json({ success: true, id: result.insertedId });
-  } catch (error) {
-    console.error("Error registering user:", error);
-    return NextResponse.json({ error: "Failed to register user" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Detailed registration error:", {
+      message: error.message,
+      stack: error.stack,
+      error
+    });
+    return NextResponse.json({ error: "Failed to register user", details: error.message }, { status: 500 });
   }
 }
