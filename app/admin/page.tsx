@@ -3,8 +3,9 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Trash2, Edit2, Plus, Info, ShieldCheck } from "lucide-react";
+import { Trash2, Edit2, Plus, Info, ShieldCheck, Loader2 } from "lucide-react";
 import Toast, { ToastType } from "../../components/Toast";
+import clsx from "clsx";
 
 interface SubTopic {
   id: string;
@@ -134,77 +135,93 @@ export default function AdminPage() {
     }
   };
 
-  if (status === "loading") return <div className="p-8 text-center">Loading...</div>;
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-lab-bg flex items-center justify-center">
+        <Loader2 className="animate-spin text-lab-ui" size={32} />
+      </div>
+    );
+  }
+
   if (!(session?.user as any)?.isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8 font-[family-name:var(--font-geist-sans)]">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Admin Panel</h1>
-        <p className="text-gray-500 mb-10">Manage themes, sub-topics, and review community ideas.</p>
+    <div className="min-h-screen bg-lab-bg text-lab-text py-12 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
+      {/* Paper Texture Layer */}
+      <div className="fixed inset-0 paper-texture z-0" />
+
+      <div className="max-w-4xl mx-auto relative z-10">
+        <header className="mb-12">
+          <div className="flex items-center space-x-4 mb-2">
+            <span className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold">SYSTEM_OVERRIDE</span>
+            <div className="h-[1px] w-12 bg-lab-ui/20" />
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-lab-text">Admin Control Panel</h1>
+          <p className="text-lab-text/50 mt-2">Manage the organic matrix and review community output.</p>
+        </header>
 
         {/* Main Theme Section */}
-        <section className="mb-12 p-8 border border-gray-100 rounded-3xl bg-white shadow-sm shadow-gray-100/50">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Main Theme</h2>
-          <div className="flex gap-3">
+        <section className="mb-8 p-8 glass-panel rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
+          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Main_Theme_Config</h2>
+          <div className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
               value={mainTheme}
               onChange={(e) => setMainTheme(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && updateTheme()}
-              className="flex-1 px-4 py-3 border border-gray-200 rounded-2xl text-black focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder-gray-400"
+              className="flex-1 px-5 py-4 bg-lab-ui/10 border-none rounded-2xl text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20"
               placeholder="e.g., Q1 Product Roadmap"
             />
             <button
               onClick={updateTheme}
-              className="bg-gray-900 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-gray-800 transition-all active:scale-95 shadow-lg shadow-gray-200"
+              className="bg-lab-text text-lab-bg px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui hover:text-lab-text transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
             >
-              Update
+              Update_System
             </button>
           </div>
         </section>
 
         {/* Sub-topics Section */}
-        <section className="mb-12 p-8 border border-gray-100 rounded-3xl bg-white shadow-sm shadow-gray-100/50">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Sub-topics Management</h2>
+        <section className="mb-8 p-8 glass-panel rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
+          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Sector_Management</h2>
 
-          <div className="flex gap-3 mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
               type="text"
               value={newSubTopic}
               onChange={(e) => setNewSubTopic(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addSubTopic()}
-              className="flex-1 px-4 py-3 border border-gray-200 rounded-2xl text-black focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder-gray-400"
-              placeholder="e.g., Marketing Ideas"
+              className="flex-1 px-5 py-4 bg-lab-ui/10 border-none rounded-2xl text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20"
+              placeholder="e.g., Marketing Sector"
             />
             <button
               onClick={addSubTopic}
-              className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-700 flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-100"
+              className="bg-lab-ui text-lab-text px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui/80 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
             >
               <Plus size={20} />
-              <span>Add Topic</span>
+              <span>Add_Sector</span>
             </button>
           </div>
 
-          <div className="overflow-hidden border border-gray-100 rounded-2xl">
-            <table className="w-full border-collapse bg-white">
+          <div className="overflow-hidden rounded-2xl border border-lab-ui/10 bg-lab-ui/5">
+            <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-gray-50/50">
-                  <th className="text-left py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Title</th>
-                  <th className="text-center py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Cards</th>
-                  <th className="text-right py-4 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Actions</th>
+                <tr className="bg-lab-ui/10">
+                  <th className="text-left py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Title</th>
+                  <th className="text-center py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Density</th>
+                  <th className="text-right py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-lab-ui/10">
                 {subTopics.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="py-10 text-center text-gray-400 italic">
-                      No sub-topics created yet.
+                    <td colSpan={3} className="py-10 text-center text-lab-text/30 italic">
+                      No active sectors detected.
                     </td>
                   </tr>
                 ) : (
                   subTopics.map((st) => (
-                    <tr key={st.id} className="hover:bg-gray-50/30 transition-colors">
+                    <tr key={st.id} className="hover:bg-lab-ui/5 transition-colors">
                       <td className="py-4 px-6">
                         {editingSubTopic?.id === st.id ? (
                           <input
@@ -212,28 +229,28 @@ export default function AdminPage() {
                             value={editingSubTopic.title}
                             onChange={(e) => setEditingSubTopic({ ...editingSubTopic, title: e.target.value })}
                             onKeyDown={(e) => e.key === "Enter" && saveEdit()}
-                            className="w-full px-3 py-1 border border-blue-200 rounded-lg text-black focus:ring-2 focus:ring-blue-500/20 outline-none"
+                            className="w-full px-3 py-1 bg-lab-bg/50 border border-lab-ui rounded-lg text-lab-text focus:outline-none"
                             autoFocus
                           />
                         ) : (
-                          <span className="font-medium text-gray-900">{st.title}</span>
+                          <span className="font-bold text-lab-text">{st.title}</span>
                         )}
                       </td>
                       <td className="py-4 px-6 text-center">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                          {st.cardCount}
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold bg-lab-ui/20 text-lab-text">
+                          {st.cardCount} UNITS
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-right space-x-3">
+                      <td className="py-4 px-6 text-right space-x-4">
                         {editingSubTopic?.id === st.id ? (
-                          <button onClick={saveEdit} className="text-blue-600 font-bold hover:text-blue-700">Save</button>
+                          <button onClick={saveEdit} className="text-lab-ui font-bold hover:text-lab-text uppercase text-[10px] tracking-widest transition-colors">Save</button>
                         ) : (
-                          <button onClick={() => startEdit(st)} className="text-gray-400 hover:text-blue-600 transition-colors">
-                            <Edit2 size={18} />
+                          <button onClick={() => startEdit(st)} className="text-lab-text/40 hover:text-lab-ui transition-colors">
+                            <Edit2 size={16} />
                           </button>
                         )}
-                        <button onClick={() => deleteSubTopic(st.id)} className="text-gray-400 hover:text-red-600 transition-colors">
-                          <Trash2 size={18} />
+                        <button onClick={() => deleteSubTopic(st.id)} className="text-lab-text/40 hover:text-red-500 transition-colors">
+                          <Trash2 size={16} />
                         </button>
                       </td>
                     </tr>
@@ -245,41 +262,41 @@ export default function AdminPage() {
         </section>
 
         {/* Ideas Summary Hover Section */}
-        <section className="p-8 border border-gray-100 rounded-3xl bg-white shadow-sm shadow-gray-100/50 relative overflow-hidden">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Ideas Review</h2>
-          <p className="text-sm text-gray-400 mb-6">Hover over an idea title to preview the AI summary.</p>
+        <section className="p-8 glass-panel rounded-[2rem] border-none shadow-xl shadow-paper-shadow relative overflow-hidden">
+          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Input_Intelligence_Review</h2>
+          <p className="text-xs text-lab-text/40 mb-6 font-bold tracking-widest uppercase">SCANNING_DATA_STREAMS...</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {ideas.length === 0 ? (
-              <div className="col-span-2 py-10 text-center text-gray-400 border-2 border-dashed border-gray-50 rounded-2xl">
-                No ideas submitted yet.
+              <div className="col-span-2 py-10 text-center text-lab-text/20 border-2 border-dashed border-lab-ui/20 rounded-[2rem]">
+                No ideas processed in this session.
               </div>
             ) : (
               ideas.map((idea) => (
                 <div
                   key={idea.id}
-                  className="p-4 border border-gray-100 rounded-2xl hover:bg-blue-50/50 hover:border-blue-100 cursor-help flex items-center justify-between group transition-all"
+                  className="p-5 bg-lab-ui/5 border border-lab-ui/10 rounded-2xl hover:bg-lab-ui/10 hover:border-lab-ui/30 cursor-help flex items-center justify-between group transition-all"
                   onMouseEnter={() => setHoveredSummary(idea.summary || "No summary available.")}
                   onMouseLeave={() => setHoveredSummary(null)}
                 >
-                  <span className="font-semibold text-gray-700 truncate mr-2">{idea.title}</span>
-                  <Info size={16} className="text-gray-300 group-hover:text-blue-500 transition-colors shrink-0" />
+                  <span className="font-bold text-lab-text/70 truncate mr-2 text-sm">{idea.title}</span>
+                  <Info size={14} className="text-lab-ui/40 group-hover:text-lab-ui transition-colors shrink-0" />
                 </div>
               ))
             )}
           </div>
 
           {hoveredSummary && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 p-6 bg-white border border-gray-100 shadow-2xl rounded-3xl z-20 text-sm animate-in fade-in zoom-in duration-300">
-              <div className="flex items-center gap-2 mb-3 text-blue-600">
-                <div className="p-1 bg-blue-50 rounded-lg">
-                  <ShieldCheck size={16} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 p-8 bg-white/95 backdrop-blur-xl border-none shadow-2xl rounded-[2rem] z-20 text-sm animate-in fade-in zoom-in duration-300 shadow-paper-shadow">
+              <div className="flex items-center gap-2 mb-4 text-lab-ui">
+                <div className="p-1.5 bg-lab-ui/20 rounded-full">
+                  <ShieldCheck size={18} />
                 </div>
-                <h3 className="font-bold">AI Summary</h3>
+                <h3 className="font-bold uppercase tracking-widest text-[10px]">AI Intelligence Summary</h3>
               </div>
-              <p className="text-gray-600 leading-relaxed italic">&quot;{hoveredSummary}&quot;</p>
-              <div className="mt-4 pt-4 border-t border-gray-50 text-[10px] text-gray-300 uppercase tracking-widest font-bold">
-                Powered by Gemini AI
+              <p className="text-lab-text/70 leading-relaxed italic font-sans">&quot;{hoveredSummary}&quot;</p>
+              <div className="mt-6 pt-4 border-t border-lab-ui/10 text-[9px] text-lab-text/30 uppercase tracking-[0.3em] font-bold">
+                PROCESSED BY GEMINI_MATRIX
               </div>
             </div>
           )}

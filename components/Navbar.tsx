@@ -51,8 +51,8 @@ export default function Navbar() {
                   className={clsx(
                     "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm shadow-paper-shadow text-[10px] uppercase font-bold tracking-widest transition-all",
                     pathname === "/admin"
-                      ? "bg-lab-ui text-lab-bg"
-                      : "bg-lab-ui/20 text-lab-ui hover:bg-lab-ui/30"
+                      ? "bg-lab-ui text-lab-text shadow-md"
+                      : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30"
                   )}
                 >
                   <ShieldCheck size={14} />
@@ -69,7 +69,7 @@ export default function Navbar() {
                 </div>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
-                  className="p-1.5 text-lab-ui/40 hover:text-red-500 transition-all"
+                  className="p-1.5 text-lab-text/30 hover:text-red-500 transition-all"
                   title="TERMINATE_SESSION"
                 >
                   <LogOut size={16} />

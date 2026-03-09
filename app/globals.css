@@ -36,8 +36,9 @@ body {
 }
 
 .glass-panel {
-  background: var(--background);
-  box-shadow: 0 10px 30px var(--paper-shadow);
+  background: color-mix(in srgb, var(--background), transparent 30%);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 40px var(--paper-shadow);
 }
 
 .paper-texture {
