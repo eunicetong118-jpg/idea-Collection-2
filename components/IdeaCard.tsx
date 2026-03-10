@@ -11,13 +11,13 @@ interface Idea {
   description?: string; // Old field
   problem?: string;
   solution?: string;
-  targetAudience?: string;
-  impact?: string;
-  risks?: string;
-  resources?: string;
-  revenue?: number;
+  relatedProduct?: string;
+  additionalBusiness?: string;
+  involvement?: string;
   department?: string;
   country?: string;
+  revenue?: string | number;
+  impact?: string;
   fileBase64?: string;
   userId: string;
   userName: string;
@@ -45,14 +45,57 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
   const [commentCount, setCommentCount] = useState(idea.commentCount || 0);
   const [showComments, setShowComments] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
+  const [stage, setStage] = useState(idea.stage);
+  const [stageStatus, setStageStatus] = useState(idea.stage_status);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
+  const isAdmin = (session?.user as any)?.isAdmin === true;
   const hasLiked = session?.user?.email ? likes.includes(session.user.email) : false;
 
-  const isDone = idea.stage === "Implement" && idea.stage_status === "Done";
+  const isDone = stage === "Implement" && stageStatus === "Done";
+
+  const displayRevenue = (rev: string | number | undefined) => {
+    if (!rev) return null;
+    if (typeof rev === 'number') {
+      return `$${rev.toLocaleString()}`;
+    }
+    return rev;
+  };
+
+  const getStatusColor = () => {
+    if (stage === "Implement" && stageStatus === "Done") return "bg-green-500";
+    if ((stage === "Idea" || stage === "Development") && (stageStatus === "In Progress" || stageStatus === "Done")) return "bg-amber-500";
+    if (stage === "Development" && stageStatus === "Pending") return "bg-red-500";
+    return "bg-lab-ui";
+  };
+
+  const stages = ["Idea", "Development", "Implement"];
+  const statuses = ["Pending", "In Progress", "Done"];
+
+  const updateStatus = async (newStage: string, newStatus: string) => {
+    if (!isAdmin || updatingStatus) return;
+    setUpdatingStatus(true);
+    try {
+      const response = await fetch(`/api/ideas/${idea._id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stage: newStage, stage_status: newStatus }),
+      });
+      if (response.ok) {
+        setStage(newStage);
+        setStageStatus(newStatus);
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
 
   const toggleLike = async () => {
     if (!session) return;
@@ -144,14 +187,60 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
           <div className="flex items-center space-x-3">
             <div className={clsx(
               "w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]",
-              isDone ? "bg-green-500" : "bg-lab-ui"
+              getStatusColor()
             )} />
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text opacity-40">
-              {idea.stage} // {idea.stage_status}
+              {stage} // {stageStatus}
             </span>
           </div>
+
+          {/* Admin Status Controls - Appears on Hover */}
+          {isAdmin && (
+            <div className="absolute top-8 right-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-end gap-2">
+              <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-lab-ui/20 flex flex-col gap-3 animate-in fade-in slide-in-from-right-4">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-lab-text/40 ml-1">Set Stage</span>
+                  <div className="flex gap-1">
+                    {stages.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => updateStatus(s, stageStatus)}
+                        className={clsx(
+                          "px-2 py-1 rounded-md text-[9px] font-bold uppercase transition-all",
+                          stage === s ? "bg-lab-text text-lab-bg" : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/40"
+                        )}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-lab-text/40 ml-1">Set Status</span>
+                  <div className="flex gap-1">
+                    {statuses.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => updateStatus(stage, s)}
+                        className={clsx(
+                          "px-2 py-1 rounded-md text-[9px] font-bold uppercase transition-all",
+                          stageStatus === s ? "bg-lab-text text-lab-bg" : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/40"
+                        )}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {isDone && (
-            <span className="text-green-700 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-green-700/10 bg-green-700/5">
+            <span className={clsx(
+              "text-green-700 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-green-700/10 bg-green-700/5 transition-opacity duration-300",
+              isAdmin && "group-hover:opacity-0"
+            )}>
               DONE
             </span>
           )}
@@ -160,9 +249,26 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
         <div>
           <h3 className="text-3xl font-bold tracking-tight text-lab-text mb-6 leading-[1.1]">{idea.title}</h3>
 
-          <p className="text-lab-text/70 text-lg mb-4 line-clamp-3 whitespace-pre-wrap leading-relaxed font-light italic serif">
-            {idea.problem || idea.description}
-          </p>
+          <div className="relative mb-4">
+            <p className={clsx(
+              "text-lab-text/70 text-lg whitespace-pre-wrap leading-relaxed font-light italic serif transition-all duration-300",
+              !isExpanded && "line-clamp-3"
+            )}>
+              {idea.problem || idea.description}
+            </p>
+            {(idea.problem || idea.description || "").length > 150 && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-[10px] font-black uppercase tracking-[0.2em] text-lab-ui hover:text-lab-text mt-2 transition-colors flex items-center gap-1"
+              >
+                {isExpanded ? (
+                  <>SHOW_LESS <ChevronUp size={12} /></>
+                ) : (
+                  <>EXTEND_NODE <ChevronDown size={12} /></>
+                )}
+              </button>
+            )}
+          </div>
 
           <div className="flex flex-wrap gap-4 mb-8">
             {idea.department && (
@@ -197,53 +303,49 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-lab-ui hover:text-lab-text transition-colors mb-8 group/details cursor-pointer relative z-10"
           >
             {showDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            {showDetails ? "HIDE_INTELLIGENCE_DATA" : "VIEW_FULL_INTELLIGENCE_DATA"}
+            {showDetails ? "HIDE_DETAILS" : "VIEW_FULL_CARD"}
           </button>
 
           {showDetails && (
             <div className="mb-10 space-y-8 animate-in fade-in duration-500 slide-in-from-top-4 border-t border-lab-ui/10 pt-8">
-              {!idea.solution && !idea.targetAudience && !idea.risks && !idea.resources && !idea.revenue && !idea.fileBase64 ? (
+              {!idea.solution && !idea.relatedProduct && !idea.additionalBusiness && !idea.involvement && !idea.revenue && !idea.fileBase64 ? (
                 <p className="text-[10px] font-black uppercase tracking-widest text-lab-text/30 italic">NO_ADDITIONAL_INTELLIGENCE_RECORDED_FOR_THIS_NODE</p>
               ) : (
                 <>
                   {/* Solution Section */}
                   {idea.solution && (
                     <div className="p-6 bg-lab-ui/5 rounded-2xl border border-lab-ui/10">
-                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3">Proposed_Solution</h4>
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3 break-words whitespace-normal">Proposed Solution</h4>
                       <p className="text-base text-lab-text/80 leading-relaxed whitespace-pre-wrap">{idea.solution}</p>
                     </div>
                   )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {idea.targetAudience && (
+                    {idea.relatedProduct && (
                       <div className="p-6 bg-lab-ui/5 rounded-2xl border border-lab-ui/10">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3">Target_Audience</h4>
-                        <p className="text-sm text-lab-text/80 leading-relaxed whitespace-pre-wrap">{idea.targetAudience}</p>
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3 break-words whitespace-normal">Related Product</h4>
+                        <p className="text-sm text-lab-text/80 leading-relaxed whitespace-pre-wrap">{idea.relatedProduct}</p>
                       </div>
                     )}
-                    {idea.risks && (
+                    {idea.additionalBusiness && (
                       <div className="p-6 bg-lab-ui/5 rounded-2xl border border-lab-ui/10">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3 flex items-center gap-2">
-                          <ShieldAlert size={12} className="text-red-500/50" /> Failure_Risks
-                        </h4>
-                        <p className="text-sm text-lab-text/80 leading-relaxed whitespace-pre-wrap">{idea.risks}</p>
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3 break-words whitespace-normal">Additional Business</h4>
+                        <p className="text-sm text-lab-text/80 leading-relaxed whitespace-pre-wrap">{idea.additionalBusiness}</p>
                       </div>
                     )}
-                    {idea.resources && (
+                    {idea.involvement && (
                       <div className="p-6 bg-lab-ui/5 rounded-2xl border border-lab-ui/10">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3 flex items-center gap-2">
-                          <Package size={12} /> Required_Resources
-                        </h4>
-                        <p className="text-sm text-lab-text/80 leading-relaxed whitespace-pre-wrap">{idea.resources}</p>
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3 break-words whitespace-normal">Development Involvement</h4>
+                        <p className="text-sm text-lab-text/80 leading-relaxed whitespace-pre-wrap">{idea.involvement}</p>
                       </div>
                     )}
-                    {typeof idea.revenue === 'number' && idea.revenue > 0 && (
+                    {idea.revenue && (
                       <div className="p-6 bg-lab-ui/5 rounded-2xl border border-lab-ui/10">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3 flex items-center gap-2">
-                          <DollarSign size={12} /> Est_Potential_Revenue
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 mb-3 flex items-center gap-2 break-words whitespace-normal">
+                          <DollarSign size={12} /> Potential Revenue
                         </h4>
-                        <p className="text-2xl font-bold text-lab-text">
-                          ${idea.revenue.toLocaleString()} <span className="text-xs font-normal opacity-40">USD</span>
+                        <p className="text-sm font-bold text-lab-text">
+                          {displayRevenue(idea.revenue)} {typeof idea.revenue === 'number' && <span className="text-[10px] font-normal opacity-40">USD</span>}
                         </p>
                       </div>
                     )}
@@ -252,12 +354,12 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
                   {/* Uploaded Image */}
                   {idea.fileBase64 && (
                     <div className="space-y-3">
-                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40">Visual_Asset_Nodes</h4>
+                      <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-lab-text/40 break-words whitespace-normal">Visual Asset Nodes</h4>
                       <div className="rounded-[1.5rem] overflow-hidden border border-lab-ui/20 shadow-lg group/img relative">
                         <img
                           src={idea.fileBase64}
                           alt={idea.title}
-                          className="w-full h-auto max-h-[400px] object-cover transition-transform duration-700 group-hover/img:scale-105"
+                          className="w-full h-auto object-contain transition-transform duration-700 group-hover/img:scale-105"
                         />
                         <div className="absolute inset-0 bg-lab-text/20 opacity-0 group-hover/img:opacity-100 transition-opacity pointer-events-none" />
                       </div>
@@ -304,7 +406,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
         {/* Comments Section */}
         {showComments && (
           <div className="mt-10 pt-10 border-t border-lab-text/5 ink-reveal">
-            <div className="space-y-8 mb-10 max-h-96 overflow-y-auto pr-4 custom-scrollbar">
+            <div className="space-y-8 mb-10 pr-4">
               {loadingComments ? (
                 <p className="text-xs text-lab-text/40 font-bold uppercase tracking-widest animate-pulse">Syncing nodes...</p>
               ) : comments.length === 0 ? (

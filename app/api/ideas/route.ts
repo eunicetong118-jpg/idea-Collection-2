@@ -37,24 +37,23 @@ export async function POST(request: NextRequest) {
       title,
       problem,
       solution,
-      targetAudience,
-      impact,
-      risks,
-      resources,
-      revenue,
+      relatedProduct,
       department,
       country,
+      additionalBusiness,
+      involvement,
+      revenue,
       fileBase64,
       subTopicId,
       force
     } = await request.json();
 
-    if (!title || !problem || !solution || !subTopicId) {
+    if (!title || !problem || !solution || !relatedProduct || !department || !country || !additionalBusiness || !involvement || !subTopicId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     // Combine relevant text fields for similarity check
-    const combinedText = `${title}\n${problem}\n${solution}\n${targetAudience}`;
+    const combinedText = `${title}\n${problem}\n${solution}\n${relatedProduct}`;
 
     // If not forced (user hasn't confirmed after a similarity warning), check similarity
     if (!force) {
@@ -82,13 +81,12 @@ export async function POST(request: NextRequest) {
       title,
       problem,
       solution,
-      targetAudience,
-      impact,
-      risks,
-      resources,
-      revenue,
+      relatedProduct,
       department,
       country,
+      additionalBusiness,
+      involvement,
+      revenue,
       fileBase64,
       subTopicId,
       userId: token.email,

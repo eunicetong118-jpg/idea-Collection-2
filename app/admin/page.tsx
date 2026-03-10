@@ -281,17 +281,12 @@ export default function AdminPage() {
 
       <div className="max-w-4xl mx-auto relative z-10">
         <header className="mb-12">
-          <div className="flex items-center space-x-4 mb-2">
-            <span className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold">SYSTEM_OVERRIDE</span>
-            <div className="h-[1px] w-12 bg-lab-ui/20" />
-          </div>
           <h1 className="text-4xl font-bold tracking-tight text-lab-text">Admin Control Panel</h1>
-          <p className="text-lab-text/50 mt-2">Manage the organic matrix and review community output.</p>
         </header>
 
         {/* Main Theme Section */}
         <section className="mb-8 p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Main_Theme_Config</h2>
+          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Main Theme Config</h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
@@ -305,14 +300,14 @@ export default function AdminPage() {
               onClick={updateTheme}
               className="bg-lab-text text-lab-bg px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui hover:text-lab-text transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
             >
-              Update_System
+              Update System
             </button>
           </div>
         </section>
 
         {/* Sub-topics Section */}
         <section className="mb-8 p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Sector_Management</h2>
+          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Sector Management</h2>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
@@ -328,7 +323,7 @@ export default function AdminPage() {
               className="bg-lab-ui text-lab-text px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui/80 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
             >
               <Plus size={20} />
-              <span>Add_Sector</span>
+              <span>Add Sector</span>
             </button>
           </div>
 
@@ -392,7 +387,7 @@ export default function AdminPage() {
 
         {/* Departments Section */}
         <section className="mb-8 p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Department_Registry</h2>
+          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Department Registry</h2>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
@@ -408,7 +403,7 @@ export default function AdminPage() {
               className="bg-lab-ui text-lab-text px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui/80 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
             >
               <Plus size={20} />
-              <span>Add_Department</span>
+              <span>Add Department</span>
             </button>
           </div>
 
@@ -466,7 +461,7 @@ export default function AdminPage() {
 
         {/* Countries Section */}
         <section className="mb-8 p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Country_Registry</h2>
+          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Country Registry</h2>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
@@ -482,7 +477,7 @@ export default function AdminPage() {
               className="bg-lab-ui text-lab-text px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui/80 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
             >
               <Plus size={20} />
-              <span>Add_Country</span>
+              <span>Add Country</span>
             </button>
           </div>
 
@@ -540,8 +535,8 @@ export default function AdminPage() {
 
         {/* Ideas Summary Hover Section */}
         <section className="p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow relative overflow-hidden">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Input_Intelligence_Review</h2>
-          <p className="text-xs text-lab-text/40 mb-6 font-bold tracking-widest uppercase">SCANNING_DATA_STREAMS...</p>
+          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Input Intelligence Review</h2>
+          <p className="text-xs text-lab-text/40 mb-6 font-bold tracking-widest uppercase">Scanning Data Streams...</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {ideas.length === 0 ? (

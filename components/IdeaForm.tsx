@@ -23,13 +23,12 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
   const [title, setTitle] = useState("");
   const [problem, setProblem] = useState("");
   const [solution, setSolution] = useState("");
-  const [targetAudience, setTargetAudience] = useState("");
-  const [impact, setImpact] = useState("Low");
-  const [risks, setRisks] = useState("");
-  const [resources, setResources] = useState("");
-  const [revenue, setRevenue] = useState("");
+  const [relatedProduct, setRelatedProduct] = useState("");
   const [department, setDepartment] = useState("");
   const [country, setCountry] = useState("");
+  const [additionalBusiness, setAdditionalBusiness] = useState("");
+  const [involvement, setInvolvement] = useState("");
+  const [revenue, setRevenue] = useState("");
   const [fileBase64, setFileBase64] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
 
@@ -103,13 +102,12 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           title,
           problem,
           solution,
-          targetAudience,
-          impact,
-          risks,
-          resources,
-          revenue: parseFloat(revenue) || 0,
+          relatedProduct,
           department,
           country,
+          additionalBusiness,
+          involvement,
+          revenue,
           fileBase64,
           subTopicId,
           force,
@@ -133,13 +131,12 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
       setTitle("");
       setProblem("");
       setSolution("");
-      setTargetAudience("");
-      setImpact("Low");
-      setRisks("");
-      setResources("");
-      setRevenue("");
+      setRelatedProduct("");
       setDepartment("");
       setCountry("");
+      setAdditionalBusiness("");
+      setInvolvement("");
+      setRevenue("");
       setFileBase64(null);
       setFileName(null);
       if (fileInputRef.current) {
@@ -158,6 +155,16 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
 
   return (
     <div className="font-mono">
+      <div className="mb-12 space-y-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-lab-text leading-tight ink-reveal">
+          How can we improve our products to increase sales?
+        </h2>
+        <p className="text-lg text-lab-text/40 italic serif ink-reveal delay-100">
+          Tell us about your Idea.
+        </p>
+        <div className="h-px w-24 bg-lab-ui/20 ink-reveal delay-200" />
+      </div>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -165,6 +172,8 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
         }}
         className="space-y-8 ink-reveal"
       >
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500/60 mb-8">* ALL_FIELDS_REQUIRED_UNLESS_NOTED</p>
+
         {/* Row 1: Title */}
         <div className="space-y-2">
           <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="title">
@@ -214,61 +223,61 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           </div>
         </div>
 
-        {/* Row 3: Target Audience & Risks */}
+        {/* Row 3: Related Product & Additional Business */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="targetAudience">
-              Target Audience
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="relatedProduct">
+              Related Product
             </label>
             <textarea
-              id="targetAudience"
+              id="relatedProduct"
               className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all h-32 resize-none placeholder:text-lab-text/20"
-              value={targetAudience}
-              onChange={(e) => setTargetAudience(e.target.value)}
+              value={relatedProduct}
+              onChange={(e) => setRelatedProduct(e.target.value)}
               required
               disabled={loading}
-              placeholder="WHO_BENEFITS..."
+              placeholder="WHICH_PRODUCT_IS_THIS_FOR..."
             />
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="risks">
-              Risks
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="additionalBusiness">
+              Additional Business
             </label>
             <textarea
-              id="risks"
+              id="additionalBusiness"
               className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all h-32 resize-none placeholder:text-lab-text/20"
-              value={risks}
-              onChange={(e) => setRisks(e.target.value)}
+              value={additionalBusiness}
+              onChange={(e) => setAdditionalBusiness(e.target.value)}
               required
               disabled={loading}
-              placeholder="POTENTIAL_FAILURES..."
+              placeholder="POTENTIAL_NEW_REVENUE_STREAMS..."
             />
           </div>
         </div>
 
-        {/* Row 4: Resources & Revenue */}
+        {/* Row 4: Involvement & Revenue */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="resources">
-              Resources
+            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="involvement">
+              Development Involvement
             </label>
             <textarea
-              id="resources"
+              id="involvement"
               className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all h-32 resize-none placeholder:text-lab-text/20"
-              value={resources}
-              onChange={(e) => setResources(e.target.value)}
+              value={involvement}
+              onChange={(e) => setInvolvement(e.target.value)}
               required
               disabled={loading}
-              placeholder="REQUIRED_ASSETS..."
+              placeholder="HOW_WOULD_YOU_LIKE_TO_CONTRIBUTE..."
             />
           </div>
           <div className="space-y-2">
             <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="revenue">
-              Potential Revenue (USD)
+              Potential Revenue
             </label>
             <input
               id="revenue"
-              type="number"
+              type="text"
               className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20 font-bold"
               value={revenue}
               onChange={(e) => setRevenue(e.target.value)}
@@ -279,8 +288,8 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           </div>
         </div>
 
-        {/* Row 5: Department, Country & Impact */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Row 5: Department & Country */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-2">
             <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="department">
               Department
@@ -315,24 +324,6 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               {countries.map((c) => (
                 <option key={c.id} value={c.name}>{c.name}</option>
               ))}
-            </select>
-          </div>
-          <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="impact">
-              Impact
-            </label>
-            <select
-              id="impact"
-              className="w-full bg-lab-ui/10 rounded-2xl p-4 text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all font-bold appearance-none cursor-pointer"
-              value={impact}
-              onChange={(e) => setImpact(e.target.value)}
-              required
-              disabled={loading}
-            >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-              <option value="Critical">Critical</option>
             </select>
           </div>
         </div>

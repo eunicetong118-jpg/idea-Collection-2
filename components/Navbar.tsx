@@ -15,14 +15,26 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [theme, setTheme] = useState({ title: "Idea Collection" });
+  const [firstSubTopicId, setFirstSubTopicId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Fetch theme
     fetch("/api/admin/theme")
       .then((res) => res.json())
       .then((data) => {
         if (data.title) setTheme(data);
       })
       .catch((err) => console.error("Error fetching theme:", err));
+
+    // Fetch subtopics to find the first one for the Dashboard link
+    fetch("/api/admin/subtopics")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setFirstSubTopicId(data[0].id);
+        }
+      })
+      .catch((err) => console.error("Error fetching subtopics:", err));
   }, []);
 
   const user = session?.user as LabUser;
@@ -46,18 +58,33 @@ export default function Navbar() {
           {status === "authenticated" ? (
             <>
               {isAdmin && (
-                <Link
-                  href="/admin"
-                  className={clsx(
-                    "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm shadow-paper-shadow text-[10px] uppercase font-bold tracking-widest transition-all",
-                    pathname === "/admin"
-                      ? "bg-lab-ui text-lab-text shadow-md"
-                      : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30"
-                  )}
-                >
-                  <ShieldCheck size={14} />
-                  <span>Admin_Panel</span>
-                </Link>
+                <>
+                  <Link
+                    href={firstSubTopicId ? `/dashboard/${firstSubTopicId}` : "/"}
+                    className={clsx(
+                      "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm shadow-paper-shadow text-[10px] uppercase font-bold tracking-widest transition-all",
+                      pathname.startsWith("/dashboard")
+                        ? "bg-lab-ui text-lab-text shadow-md"
+                        : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30"
+                    )}
+                  >
+                    <LayoutDashboard size={14} />
+                    <span>Dashboard</span>
+                  </Link>
+
+                  <Link
+                    href="/admin"
+                    className={clsx(
+                      "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm shadow-paper-shadow text-[10px] uppercase font-bold tracking-widest transition-all",
+                      pathname === "/admin"
+                        ? "bg-lab-ui text-lab-text shadow-md"
+                        : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30"
+                    )}
+                  >
+                    <ShieldCheck size={14} />
+                    <span>Admin Panel</span>
+                  </Link>
+                </>
               )}
 
               <div className="flex items-center space-x-3 pl-4 pr-1 py-1 rounded-full bg-lab-ui/20 shadow-sm shadow-paper-shadow">
@@ -70,7 +97,7 @@ export default function Navbar() {
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
                   className="p-1.5 text-lab-text/30 hover:text-red-500 transition-all"
-                  title="TERMINATE_SESSION"
+                  title="Terminate Session"
                 >
                   <LogOut size={16} />
                 </button>
