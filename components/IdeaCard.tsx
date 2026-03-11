@@ -187,7 +187,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
       >
         {/* AI Summary Popup (Overlay) */}
         {showAiSummary && (
-          <div className="absolute inset-0 z-[100] animate-in fade-in zoom-in-95 duration-300 p-6">
+          <div className="absolute inset-0 z-[100] animate-in fade-in zoom-in-95 duration-300 p-6 pointer-events-none">
             <div className="w-full h-full bg-lab-text/95 text-lab-bg p-8 rounded-[1.5rem] shadow-2xl relative border border-white/10 backdrop-blur-xl flex flex-col justify-center overflow-y-auto">
               <div className="flex items-center gap-3 mb-4 opacity-60">
                 <div className="w-2 h-2 rounded-full bg-lab-ui animate-pulse" />
