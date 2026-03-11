@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { useSession, signOut, signIn } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { LogOut, LayoutDashboard, ShieldCheck, User } from "lucide-react";
+import { LogOut, LayoutDashboard, ShieldCheck, User, Columns } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
+import { FEATURE_FLAGS } from "@/lib/feature-flags";
 
 interface LabUser {
   isAdmin?: boolean;
@@ -71,6 +72,21 @@ export default function Navbar() {
                     <LayoutDashboard size={14} />
                     <span>Dashboard</span>
                   </Link>
+
+                  {FEATURE_FLAGS.ENABLE_KANBAN_BOARD && (
+                    <Link
+                      href="/kanban"
+                      className={clsx(
+                        "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm shadow-paper-shadow text-[10px] uppercase font-bold tracking-widest transition-all",
+                        pathname === "/kanban"
+                          ? "bg-lab-ui text-lab-text shadow-md"
+                          : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30"
+                      )}
+                    >
+                      <Columns size={14} />
+                      <span>Kanban</span>
+                    </Link>
+                  )}
 
                   <Link
                     href="/admin"

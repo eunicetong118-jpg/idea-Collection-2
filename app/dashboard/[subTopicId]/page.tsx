@@ -70,6 +70,23 @@ export default function DashboardPage() {
     }
   }, [subTopicId]);
 
+  // Handle auto-scroll to card from URL hash
+  useEffect(() => {
+    if (!loading && window.location.hash) {
+      const id = window.location.hash.substring(1);
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.classList.add("ring-4", "ring-lab-ui", "ring-offset-8", "rounded-[2.5rem]", "transition-all", "duration-1000");
+          setTimeout(() => {
+            element.classList.remove("ring-4", "ring-lab-ui", "ring-offset-8");
+          }, 3000);
+        }
+      }, 500); // Small delay to ensure cards are rendered and animations are playing
+    }
+  }, [loading]);
+
   const sortedIdeas = useMemo(() => {
     return [...ideas].sort((a, b) => {
       const aIsDone = a.stage === "Implement" && a.stage_status === "Done";
@@ -158,6 +175,7 @@ export default function DashboardPage() {
             {sortedIdeas.map((idea, index) => (
               <div
                 key={idea._id}
+                id={idea._id}
                 className="ink-reveal"
                 style={{ animationDelay: `${400 + index * 100}ms` }}
               >

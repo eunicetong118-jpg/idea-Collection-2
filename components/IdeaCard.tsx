@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { ThumbsUp, MessageSquare, User, Calendar, ExternalLink, ChevronDown, ChevronUp, Briefcase, Globe, BarChart3, ShieldAlert, Package, DollarSign } from "lucide-react";
 import { useSession } from "next-auth/react";
-import clsx from "clsx";
+import { FEATURE_FLAGS } from "@/lib/feature-flags";
 
 interface Idea {
   _id: string;
@@ -28,10 +28,6 @@ interface Idea {
   commentCount: number;
   summary?: string;
 }
-
-const FEATURE_FLAGS = {
-  ENABLE_AI_SUMMARY: true,
-};
 
 interface Comment {
   _id: string;

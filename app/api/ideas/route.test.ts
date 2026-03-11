@@ -1,5 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { POST } from './route'
+import { GET, POST } from './route'
 import { NextRequest } from 'next/server'
 import { getDb } from '@/lib/mongodb'
 import { getToken } from 'next-auth/jwt'
@@ -20,6 +20,41 @@ vi.mock('@/lib/ai/similarity', () => ({
 vi.mock('@/lib/ai/summarize', () => ({
   generateSummary: vi.fn(),
 }))
+
+describe('GET /api/ideas', () => {
+  const mockDb = {
+    collection: vi.fn().mockReturnThis(),
+    find: vi.fn().mockReturnThis(),
+    sort: vi.fn().mockReturnThis(),
+    toArray: vi.fn().mockResolvedValue([{ title: 'Idea 1' }, { title: 'Idea 2' }]),
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    ;(getDb as any).mockResolvedValue(mockDb)
+  })
+
+  it('should fetch ideas with subTopicId filter if provided', async () => {
+    const request = new NextRequest('http://localhost/api/ideas?subTopicId=sub-1')
+    const response = await GET(request)
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data).toHaveLength(2)
+    expect(mockDb.collection).toHaveBeenCalledWith('ideas')
+    expect(mockDb.find).toHaveBeenCalledWith({ subTopicId: 'sub-1' })
+  })
+
+  it('should fetch all ideas if subTopicId is not provided', async () => {
+    const request = new NextRequest('http://localhost/api/ideas')
+    const response = await GET(request)
+    const data = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(data).toHaveLength(2)
+    expect(mockDb.find).toHaveBeenCalledWith({})
+  })
+})
 
 describe('POST /api/ideas', () => {
   const mockDb = {

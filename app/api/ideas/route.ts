@@ -9,13 +9,11 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const subTopicId = searchParams.get("subTopicId");
 
-    if (!subTopicId) {
-      return NextResponse.json({ error: "subTopicId is required" }, { status: 400 });
-    }
-
     const db = await getDb();
+    const query = subTopicId ? { subTopicId } : {};
+
     const ideas = await db.collection("ideas")
-      .find({ subTopicId })
+      .find(query)
       .sort({ createdAt: -1 })
       .toArray();
 
