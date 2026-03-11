@@ -142,12 +142,8 @@ export default function DashboardPage() {
 
       <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12 relative z-10">
         <header className="mb-16 ink-reveal [animation-delay:200ms]">
-          <div className="flex items-center space-x-6 mb-3">
-            <span className="text-[10px] uppercase tracking-[0.5em] opacity-40 font-black">NODE : {currentSubTopic?.title.toUpperCase()}</span>
-            <div className="h-[1px] w-24 bg-lab-ui/30" />
-          </div>
           <h1 className="text-5xl font-bold tracking-tighter text-lab-text italic">
-            Knowledge_<span className="text-lab-ui">Repository</span>
+            Share your <span className="text-lab-ui">thoughts with us</span>
           </h1>
         </header>
         {sortedIdeas.length === 0 ? (
@@ -155,10 +151,7 @@ export default function DashboardPage() {
             <div className="mx-auto h-20 w-20 bg-lab-ui/20 rounded-full flex items-center justify-center mb-6">
               <Plus size={40} className="text-lab-ui" />
             </div>
-            <h2 className="text-3xl font-bold text-lab-text mb-3 tracking-tighter">Zero Matrix Nodes</h2>
-            <p className="text-lab-text/40 max-w-xs mx-auto text-sm uppercase tracking-widest">
-              Initialize first implementation sequence for {currentSubTopic?.title}.
-            </p>
+            <h2 className="text-3xl font-bold text-lab-text mb-3 tracking-tighter">Waiting for some nice ideas...</h2>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">

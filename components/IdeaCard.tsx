@@ -370,9 +370,9 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             </div>
           )}
 
-          <div className="flex items-center justify-between text-xs font-bold tracking-widest uppercase opacity-40 mb-10 border-t border-lab-text/5 pt-6">
-            <span>USR_{idea.userName.split(' ')[0]}</span>
-            <span>TS_{new Date(idea.createdAt).toLocaleDateString()}</span>
+          <div className="flex items-start justify-between text-xs font-bold tracking-widest uppercase opacity-40 mb-10 border-t border-lab-text/5 pt-6 gap-4">
+            <span className="flex-1 break-words">USR_{idea.userName.toUpperCase()}</span>
+            <span className="shrink-0 whitespace-nowrap">TS_{new Date(idea.createdAt).toLocaleDateString()}</span>
           </div>
 
           <div className="flex items-center space-x-6">
