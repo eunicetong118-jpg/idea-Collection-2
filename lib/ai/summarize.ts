@@ -11,7 +11,7 @@ export async function generateSummary(title: string, description: string): Promi
 
   const prompt = PromptTemplate.fromTemplate(`
     You are an AI assistant specialized in summarizing creative ideas for administrators.
-    Summarize the following idea in exactly 100 words or less.
+    Summarize the following idea in exactly 50 words or less.
     Focus on the core value proposition and key features.
 
     Title: {title}

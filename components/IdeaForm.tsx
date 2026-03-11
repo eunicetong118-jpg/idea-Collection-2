@@ -160,7 +160,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           How can we improve our products to increase sales?
         </h2>
         <p className="text-lg text-lab-text/40 italic serif ink-reveal delay-100">
-          Tell us about your Idea.
+          Idea Submission Form
         </p>
         <div className="h-px w-24 bg-lab-ui/20 ink-reveal delay-200" />
       </div>
@@ -195,7 +195,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-2">
             <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="problem">
-              Problem
+              What problem are you trying to solve?
             </label>
             <textarea
               id="problem"
@@ -209,7 +209,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           </div>
           <div className="space-y-2">
             <label className="text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold" htmlFor="solution">
-              Solution
+              Please explain the solution you are proposing
             </label>
             <textarea
               id="solution"
@@ -385,7 +385,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
                 <span>UPLOADING_SEQUENCE...</span>
               </>
             ) : (
-              "COMMIT_INTELLIGENCE_ENTRY"
+              "Submit Idea"
             )}
           </span>
         </button>

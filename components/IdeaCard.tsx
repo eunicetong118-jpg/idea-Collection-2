@@ -26,7 +26,12 @@ interface Idea {
   stage_status: string;
   likes: string[];
   commentCount: number;
+  summary?: string;
 }
+
+const FEATURE_FLAGS = {
+  ENABLE_AI_SUMMARY: true,
+};
 
 interface Comment {
   _id: string;
@@ -53,9 +58,14 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
   const [stage, setStage] = useState(idea.stage);
   const [stageStatus, setStageStatus] = useState(idea.stage_status);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [showAiSummary, setShowAiSummary] = useState(false);
+  const [showStatusControls, setShowStatusControls] = useState(false);
 
   const isAdmin = (session?.user as any)?.isAdmin === true;
   const hasLiked = session?.user?.email ? likes.includes(session.user.email) : false;
+
+  const isLongProblem = (idea.problem?.trim().split(/\s+/).length ?? 0) > 100;
+  const canShowSummary = isAdmin && FEATURE_FLAGS.ENABLE_AI_SUMMARY && isLongProblem && !!idea.summary;
 
   const isDone = stage === "Implement" && stageStatus === "Done";
 
@@ -169,11 +179,27 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
       <div className="absolute inset-0 bg-white/40 rounded-[2rem] translate-x-1 translate-y-1 -z-10 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500" />
 
       <div
+        data-testid="idea-card-container"
         className={clsx(
           "bg-white/90 rounded-[2rem] p-10 shadow-2xl shadow-paper-shadow border-none hover:translate-y-[-6px] transition-all duration-500 relative",
           isDone && "opacity-60 grayscale-[0.3]"
         )}
       >
+        {/* AI Summary Popup (Overlay) */}
+        {showAiSummary && (
+          <div className="absolute inset-0 z-[100] animate-in fade-in zoom-in-95 duration-300 p-6">
+            <div className="w-full h-full bg-lab-text/95 text-lab-bg p-8 rounded-[1.5rem] shadow-2xl relative border border-white/10 backdrop-blur-xl flex flex-col justify-center overflow-y-auto">
+              <div className="flex items-center gap-3 mb-4 opacity-60">
+                <div className="w-2 h-2 rounded-full bg-lab-ui animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em]">AI_SYNTHESIS_SUMMARY</span>
+              </div>
+              <p className="text-lg font-medium leading-relaxed italic serif">
+                "{idea.summary}"
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Popular Idea Seal (Hanko) */}
         {likes.length >= 5 && (
           <div className="absolute -top-2 -right-4 rotate-12 scale-75 opacity-60 pointer-events-none">
@@ -184,7 +210,12 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
         )}
 
         <div className="flex justify-between items-start mb-8">
-          <div className="flex items-center space-x-3">
+          <div
+            data-testid="idea-status-section"
+            className="flex items-center space-x-3 cursor-pointer"
+            onMouseEnter={() => isAdmin && setShowStatusControls(true)}
+            onMouseLeave={() => setShowStatusControls(false)}
+          >
             <div className={clsx(
               "w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]",
               getStatusColor()
@@ -196,7 +227,15 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
 
           {/* Admin Status Controls - Appears on Hover */}
           {isAdmin && (
-            <div className="absolute top-8 right-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-end gap-2">
+            <div
+              data-testid="admin-status-controls"
+              className={clsx(
+                "absolute top-8 right-10 transition-opacity duration-300 flex flex-col items-end gap-2 z-50",
+                showStatusControls ? "opacity-100" : "opacity-0 pointer-events-none"
+              )}
+              onMouseEnter={() => setShowStatusControls(true)}
+              onMouseLeave={() => setShowStatusControls(false)}
+            >
               <div className="bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-lab-ui/20 flex flex-col gap-3 animate-in fade-in slide-in-from-right-4">
                 <div className="flex flex-col gap-1">
                   <span className="text-[8px] font-black uppercase tracking-widest text-lab-text/40 ml-1">Set Stage</span>
@@ -239,7 +278,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
           {isDone && (
             <span className={clsx(
               "text-green-700 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-green-700/10 bg-green-700/5 transition-opacity duration-300",
-              isAdmin && "group-hover:opacity-0"
+              isAdmin && showStatusControls && "opacity-0"
             )}>
               DONE
             </span>
@@ -247,13 +286,26 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
         </div>
 
         <div>
-          <h3 className="text-3xl font-bold tracking-tight text-lab-text mb-6 leading-[1.1]">{idea.title}</h3>
+          <h3
+            data-testid="idea-title"
+            className={clsx(
+              "text-3xl font-bold tracking-tight text-lab-text mb-6 leading-[1.1]",
+              canShowSummary && "cursor-help"
+            )}
+            onMouseEnter={() => canShowSummary && setShowAiSummary(true)}
+            onMouseLeave={() => setShowAiSummary(false)}
+          >
+            {idea.title}
+          </h3>
 
           <div className="relative mb-4">
-            <p className={clsx(
-              "text-lab-text/70 text-lg whitespace-pre-wrap leading-relaxed font-light italic serif transition-all duration-300",
-              !isExpanded && "line-clamp-3"
-            )}>
+            <p
+              data-testid="idea-problem-text"
+              className={clsx(
+                "text-lab-text/70 text-lg whitespace-pre-wrap leading-relaxed font-light italic serif transition-all duration-300",
+                !isExpanded && "line-clamp-3"
+              )}
+            >
               {idea.problem || idea.description}
             </p>
             {(idea.problem || idea.description || "").length > 150 && (

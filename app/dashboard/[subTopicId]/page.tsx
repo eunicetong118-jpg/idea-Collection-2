@@ -182,7 +182,7 @@ export default function DashboardPage() {
           <div className="bg-white rounded-[2rem] w-full max-w-4xl my-8 overflow-hidden shadow-2xl shadow-paper-shadow animate-in zoom-in-95 duration-300 border-none relative">
             <div className="p-8 sticky top-0 bg-white z-10 flex justify-between items-center border-b border-lab-ui/10">
               <div>
-                <h2 className="text-2xl font-bold tracking-tight text-lab-text">New_Intelligence_Entry</h2>
+                <h2 className="text-2xl font-bold tracking-tight text-lab-text">Idea Submission Form</h2>
                 <p className="text-[10px] uppercase tracking-[0.3em] opacity-40 font-bold mt-1">Initialize collective synchronization sequence</p>
               </div>
               <button
