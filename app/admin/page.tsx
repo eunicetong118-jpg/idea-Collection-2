@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Trash2, Edit2, Plus, Info, ShieldCheck, Loader2 } from "lucide-react";
+import { Trash2, Edit2, Plus, Loader2 } from "lucide-react";
 import Toast, { ToastType } from "../../components/Toast";
 import clsx from "clsx";
 
@@ -43,8 +43,6 @@ export default function AdminPage() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [newCountry, setNewCountry] = useState("");
   const [editingCountry, setEditingCountry] = useState<Country | null>(null);
-  const [ideas, setIdeas] = useState<Idea[]>([]);
-  const [hoveredSummary, setHoveredSummary] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
   const showToast = (message: string, type: ToastType) => {
@@ -63,7 +61,6 @@ export default function AdminPage() {
       fetchSubTopics();
       fetchDepartments();
       fetchCountries();
-      fetchIdeas();
     }
   }, [session]);
 
@@ -96,14 +93,6 @@ export default function AdminPage() {
     if (res.ok) {
       const data = await res.json();
       setCountries(data);
-    }
-  };
-
-  const fetchIdeas = async () => {
-    const res = await fetch("/api/admin/ideas");
-    if (res.ok) {
-      const data = await res.json();
-      setIdeas(data);
     }
   };
 
@@ -531,47 +520,6 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
-        </section>
-
-        {/* Ideas Summary Hover Section */}
-        <section className="p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow relative overflow-hidden">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Input Intelligence Review</h2>
-          <p className="text-xs text-lab-text/40 mb-6 font-bold tracking-widest uppercase">Scanning Data Streams...</p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {ideas.length === 0 ? (
-              <div className="col-span-2 py-10 text-center text-lab-text/20 border-2 border-dashed border-lab-ui/20 rounded-[2rem]">
-                No ideas processed in this session.
-              </div>
-            ) : (
-              ideas.map((idea) => (
-                <div
-                  key={idea.id}
-                  className="p-5 bg-lab-ui/5 border border-lab-ui/10 rounded-2xl hover:bg-lab-ui/10 hover:border-lab-ui/30 cursor-help flex items-center justify-between group transition-all"
-                  onMouseEnter={() => setHoveredSummary(idea.summary || "No summary available.")}
-                  onMouseLeave={() => setHoveredSummary(null)}
-                >
-                  <span className="font-bold text-lab-text/70 truncate mr-2 text-sm">{idea.title}</span>
-                  <Info size={14} className="text-lab-ui/40 group-hover:text-lab-ui transition-colors shrink-0" />
-                </div>
-              ))
-            )}
-          </div>
-
-          {hoveredSummary && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 p-8 bg-white/95 backdrop-blur-xl border-none shadow-2xl rounded-[2rem] z-20 text-sm animate-in fade-in zoom-in duration-300 shadow-paper-shadow">
-              <div className="flex items-center gap-2 mb-4 text-lab-ui">
-                <div className="p-1.5 bg-lab-ui/20 rounded-full">
-                  <ShieldCheck size={18} />
-                </div>
-                <h3 className="font-bold uppercase tracking-widest text-[10px]">AI Intelligence Summary</h3>
-              </div>
-              <p className="text-lab-text/70 leading-relaxed italic font-sans">&quot;{hoveredSummary}&quot;</p>
-              <div className="mt-6 pt-4 border-t border-lab-ui/10 text-[9px] text-lab-text/30 uppercase tracking-[0.3em] font-bold">
-                PROCESSED BY GEMINI_MATRIX
-              </div>
-            </div>
-          )}
         </section>
       </div>
 
