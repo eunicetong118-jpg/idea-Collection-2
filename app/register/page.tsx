@@ -72,9 +72,6 @@ export default function RegisterPage() {
         <h2 className="text-center text-4xl font-bold tracking-tight text-lab-text">
           Register your account
         </h2>
-        <p className="mt-4 text-center text-sm text-lab-text/60 leading-relaxed max-w-xs mx-auto">
-          Synchronize your credentials to join the innovation subsystem.
-        </p>
       </div>
 
       <div className="mt-8 relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
