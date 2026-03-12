@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { CheckCircle2, XCircle, X } from "lucide-react";
-import clsx from "clsx";
+import { clsx } from "clsx";
 
 export type ToastType = "success" | "error";
 

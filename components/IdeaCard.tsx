@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { ThumbsUp, MessageSquare, User, Calendar, ExternalLink, ChevronDown, ChevronUp, Briefcase, Globe, BarChart3, ShieldAlert, Package, DollarSign } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { clsx } from "clsx";
 import { FEATURE_FLAGS } from "@/lib/feature-flags";
 
 interface Idea {

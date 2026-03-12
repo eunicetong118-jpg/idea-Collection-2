@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { useSession } from "next-auth/react";
 import { Columns, ArrowRight, User as UserIcon } from "lucide-react";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { FEATURE_FLAGS } from "@/lib/feature-flags";
 
 interface Idea {

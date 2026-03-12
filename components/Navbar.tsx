@@ -5,7 +5,7 @@ import { useSession, signOut, signIn } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { LogOut, LayoutDashboard, ShieldCheck, User, Columns } from "lucide-react";
 import Link from "next/link";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { FEATURE_FLAGS } from "@/lib/feature-flags";
 
 interface LabUser {

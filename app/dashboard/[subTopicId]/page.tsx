@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import IdeaCard from "@/components/IdeaCard";
 import IdeaForm from "@/components/IdeaForm";
 import { Plus } from "lucide-react";
-import clsx from "clsx";
+import { clsx } from "clsx";
 
 interface SubTopic {
   id: string;

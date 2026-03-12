@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, ShieldCheck, UserPlus, ArrowRight } from "lucide-react";
+import HeroAnimation from "@/components/HeroAnimation";
 
 interface LabUser {
   isAdmin?: boolean;
@@ -92,7 +93,7 @@ export default function LandingPage() {
       <div className="fixed inset-0 paper-texture z-0" />
 
       <main className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-32">
-        <div className="max-w-4xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-16">
             <header className="space-y-6">
               <div className="flex items-center space-x-4 mb-8 ink-reveal [animation-delay:100ms]">
@@ -146,6 +147,10 @@ export default function LandingPage() {
                 </p>
               </div>
             )}
+          </div>
+
+          <div className="hidden lg:block ink-reveal [animation-delay:800ms]">
+            <HeroAnimation />
           </div>
         </div>
       </main>
