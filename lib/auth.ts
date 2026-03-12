@@ -1,7 +1,8 @@
 import { NextAuthOptions } from "next-auth";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "./mongodb";
+import clientPromise, { getDb } from "./mongodb";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
@@ -13,16 +14,28 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Simple MVP logic: accept any valid-looking email/password for now
-        // In a real app, you'd check the database or use a real authentication provider
-        if (credentials?.email && credentials?.password) {
-          return {
-            id: credentials.email, // using email as ID for simple MVP
-            name: credentials.email.split("@")[0],
-            email: credentials.email,
-          };
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Missing email or password");
         }
-        return null;
+
+        const db = await getDb();
+        const user = await db.collection("users").findOne({ email: credentials.email });
+
+        if (!user) {
+          throw new Error("No user found with this email");
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
+
+        if (!isPasswordCorrect) {
+          throw new Error("Invalid password");
+        }
+
+        return {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+        };
       },
     }),
   ],
