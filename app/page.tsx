@@ -83,7 +83,7 @@ export default function LandingPage() {
         fetchData();
       }
     } else {
-      signIn();
+      router.push("/login");
     }
   };
 

@@ -1,19 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { UserPlus, Mail, Lock, User, ArrowLeft, Loader2 } from "lucide-react";
+import { LogIn, Mail, Lock, ArrowLeft, Loader2, UserPlus } from "lucide-react";
+import Link from "next/link";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      if (errorParam === "CredentialsSignin") {
+        setError("Login credentials don't match our records.");
+      } else if (errorParam.includes("No user found")) {
+        setError("This email is not registered in our subsystem.");
+      } else {
+        setError(errorParam);
+      }
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,31 +35,26 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      const res = await signIn("credentials", {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
       });
 
-      if (res.ok) {
-        // Automatically sign in after successful registration
-        const signInRes = await signIn("credentials", {
-          redirect: false,
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (signInRes?.ok) {
-          router.push("/"); // Landing page will handle redirect to dashboard
+      if (res?.error) {
+        if (res.error.includes("No user found")) {
+          setError("User not registered. Please create an account.");
+        } else if (res.error.includes("Invalid password") || res.error === "CredentialsSignin") {
+          setError("Login credentials don't match. Please check your password.");
         } else {
-          router.push("/login");
+          setError(res.error);
         }
       } else {
-        const data = await res.json();
-        setError(data.error || "Registration failed");
+        router.push("/");
+        router.refresh();
       }
     } catch (err) {
-      setError("An unexpected error occurred");
+      setError("An unexpected authentication error occurred.");
     } finally {
       setLoading(false);
     }
@@ -57,22 +66,22 @@ export default function RegisterPage() {
       <div className="fixed inset-0 paper-texture z-0" />
 
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <button
-          onClick={() => router.push("/")}
-          className="flex items-center text-[10px] uppercase font-bold tracking-widest text-lab-text/40 hover:text-lab-ui mb-8 transition-colors"
+        <Link
+          href="/"
+          className="flex items-center text-[10px] uppercase font-bold tracking-widest text-lab-text/40 hover:text-lab-ui mb-8 transition-colors w-fit"
         >
           <ArrowLeft size={14} className="mr-2" />
           Back_to_Home
-        </button>
+        </Link>
 
-        <div className="bg-lab-ui/40 w-16 h-16 rounded-full flex items-center justify-center text-lab-text shadow-lg shadow-paper-shadow mx-auto mb-6">
-          <UserPlus size={28} />
+        <div className="bg-lab-ui/40 w-16 h-16 rounded-full flex items-center justify-center text-lab-text shadow-lg shadow-paper-shadow mx-auto mb-6 border-2 border-lab-ui/20">
+          <LogIn size={28} />
         </div>
         <h2 className="text-center text-4xl font-bold tracking-tight text-lab-text">
-          Initialize Account
+          Access Matrix
         </h2>
-        <p className="mt-4 text-center text-sm text-lab-text/60 leading-relaxed max-w-xs mx-auto">
-          Synchronize your credentials to join the innovation subsystem.
+        <p className="mt-4 text-center text-sm text-lab-text/60 leading-relaxed max-w-xs mx-auto italic">
+          Authorize your identity to enter the collective intelligence node.
         </p>
       </div>
 
@@ -80,35 +89,19 @@ export default function RegisterPage() {
         <div className="glass-panel py-10 px-4 shadow-2xl shadow-paper-shadow sm:rounded-[2.5rem] sm:px-10 border-none">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-500/10 border-l-4 border-red-500 p-4 text-xs font-bold text-red-700 rounded-r-xl">
-                ERROR : {error}
+              <div className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-xl animate-in slide-in-from-top-2 duration-300">
+                <p className="text-[10px] font-black uppercase tracking-widest text-red-700 mb-1">Authorization_Failure</p>
+                <p className="text-xs font-bold text-red-600/80 leading-relaxed">{error}</p>
+                <div className="mt-3 flex gap-4">
+                   <Link href="/register" className="text-[9px] font-black uppercase tracking-widest text-red-700 hover:underline">Register_Now</Link>
+                   <button type="button" onClick={() => setError("")} className="text-[9px] font-black uppercase tracking-widest text-red-700/40 hover:text-red-700 transition-colors">Clear_Notice</button>
+                </div>
               </div>
             )}
 
             <div>
-              <label htmlFor="name" className="block text-[10px] uppercase font-bold tracking-widest text-lab-text/40 mb-2 ml-1">
-                Full_Name
-              </label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-lab-text/20 group-focus-within:text-lab-ui transition-colors">
-                  <User size={18} />
-                </div>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="block w-full pl-12 pr-4 py-4 bg-lab-ui/10 border-none rounded-2xl leading-5 text-lab-text placeholder-lab-text/20 focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all text-sm"
-                  placeholder="John Doe"
-                />
-              </div>
-            </div>
-
-            <div>
               <label htmlFor="email" className="block text-[10px] uppercase font-bold tracking-widest text-lab-text/40 mb-2 ml-1">
-                Email_Address
+                Identity_Email
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-lab-text/20 group-focus-within:text-lab-ui transition-colors">
@@ -118,19 +111,18 @@ export default function RegisterPage() {
                   id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="block w-full pl-12 pr-4 py-4 bg-lab-ui/10 border-none rounded-2xl leading-5 text-lab-text placeholder-lab-text/20 focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all text-sm"
-                  placeholder="you@innovation.org"
+                  className="block w-full pl-12 pr-4 py-4 bg-lab-ui/10 border-none rounded-2xl leading-5 text-lab-text placeholder-lab-text/20 focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all text-sm font-bold"
+                  placeholder="name@subsystem.com"
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="password" className="block text-[10px] uppercase font-bold tracking-widest text-lab-text/40 mb-2 ml-1">
-                Security_Cipher
+                Access_Cipher
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-lab-text/20 group-focus-within:text-lab-ui transition-colors">
@@ -143,7 +135,7 @@ export default function RegisterPage() {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="block w-full pl-12 pr-4 py-4 bg-lab-ui/10 border-none rounded-2xl leading-5 text-lab-text placeholder-lab-text/20 focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all text-sm"
+                  className="block w-full pl-12 pr-4 py-4 bg-lab-ui/10 border-none rounded-2xl leading-5 text-lab-text placeholder-lab-text/20 focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all text-sm font-bold"
                   placeholder="••••••••"
                 />
               </div>
@@ -158,7 +150,7 @@ export default function RegisterPage() {
                 {loading ? (
                   <Loader2 className="animate-spin" size={20} />
                 ) : (
-                  "Create_Account"
+                  "Initiate_Login"
                 )}
               </button>
             </div>
@@ -170,16 +162,17 @@ export default function RegisterPage() {
                 <div className="w-full border-t border-lab-ui/20"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-4 bg-transparent text-lab-text/40 font-bold uppercase tracking-widest">Existing Subsystem?</span>
+                <span className="px-4 bg-transparent text-lab-text/40 font-bold uppercase tracking-widest">New_To_Subsystem?</span>
               </div>
             </div>
 
             <div className="mt-8">
               <Link
-                href="/login"
-                className="w-full flex justify-center py-4 px-4 border-2 border-lab-ui/20 rounded-full text-xs font-bold uppercase tracking-widest text-lab-text hover:bg-lab-ui/10 transition-all active:scale-[0.98]"
+                href="/register"
+                className="w-full flex justify-center items-center gap-2 py-4 px-4 border-2 border-lab-ui/20 rounded-full text-xs font-bold uppercase tracking-widest text-lab-text hover:bg-lab-ui/10 transition-all active:scale-[0.98]"
               >
-                Access_Login
+                <UserPlus size={16} />
+                Register_Account
               </Link>
             </div>
           </div>

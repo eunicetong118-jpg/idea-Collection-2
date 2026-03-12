@@ -120,12 +120,12 @@ export default function Navbar() {
               </div>
             </>
           ) : (
-            <button
-              onClick={() => signIn()}
+            <Link
+              href="/login"
               className="text-xs font-black uppercase tracking-widest bg-lab-ui text-lab-bg px-6 py-2 rounded-full shadow-sm shadow-paper-shadow hover:bg-lab-text transition-all active:scale-95"
             >
               Login
-            </button>
+            </Link>
           )}
         </div>
       </div>
