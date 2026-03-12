@@ -78,7 +78,7 @@ export default function LoginPage() {
           <LogIn size={28} />
         </div>
         <h2 className="text-center text-4xl font-bold tracking-tight text-lab-text">
-          Access Matrix
+          Login
         </h2>
       </div>
 
@@ -98,7 +98,7 @@ export default function LoginPage() {
 
             <div>
               <label htmlFor="email" className="block text-[10px] uppercase font-bold tracking-widest text-lab-text/40 mb-2 ml-1">
-                Identity_Email
+                Your email
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-lab-text/20 group-focus-within:text-lab-ui transition-colors">
@@ -119,7 +119,7 @@ export default function LoginPage() {
 
             <div>
               <label htmlFor="password" className="block text-[10px] uppercase font-bold tracking-widest text-lab-text/40 mb-2 ml-1">
-                Access_Cipher
+                Your password
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-lab-text/20 group-focus-within:text-lab-ui transition-colors">
