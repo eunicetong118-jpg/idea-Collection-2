@@ -70,7 +70,7 @@ export default function RegisterPage() {
           <UserPlus size={28} />
         </div>
         <h2 className="text-center text-4xl font-bold tracking-tight text-lab-text">
-          Initialize Account
+          Register your account
         </h2>
         <p className="mt-4 text-center text-sm text-lab-text/60 leading-relaxed max-w-xs mx-auto">
           Synchronize your credentials to join the innovation subsystem.
@@ -88,7 +88,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="name" className="block text-[10px] uppercase font-bold tracking-widest text-lab-text/40 mb-2 ml-1">
-                Full_Name
+                Your name
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-lab-text/20 group-focus-within:text-lab-ui transition-colors">
@@ -109,7 +109,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="email" className="block text-[10px] uppercase font-bold tracking-widest text-lab-text/40 mb-2 ml-1">
-                Email_Address
+                Your email
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-lab-text/20 group-focus-within:text-lab-ui transition-colors">
@@ -131,7 +131,7 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="password" className="block text-[10px] uppercase font-bold tracking-widest text-lab-text/40 mb-2 ml-1">
-                Security_Cipher
+                Your password
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-lab-text/20 group-focus-within:text-lab-ui transition-colors">
