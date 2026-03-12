@@ -149,7 +149,7 @@ export default function LandingPage() {
             )}
           </div>
 
-          <div className="hidden lg:block ink-reveal [animation-delay:800ms]">
+          <div className="hidden lg:block ink-reveal [animation-delay:800ms] self-end pb-12">
             <HeroAnimation />
           </div>
         </div>

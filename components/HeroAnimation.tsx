@@ -5,10 +5,10 @@ import { Rocket, ArrowUp, MessageSquare, Check } from "lucide-react";
 
 export default function HeroAnimation() {
   return (
-    <div className="order-1 lg:order-2 relative px-4 sm:px-0">
+    <div className="order-1 lg:order-2 relative px-4 sm:px-0 lg:pt-20">
       <div className="relative w-full max-w-lg mx-auto">
         {/* Main UI Mockup Card */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-6 relative z-20 shadow-2xl shadow-paper-shadow border border-white/50">
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-6 relative z-20 shadow-[0_32px_64px_-16px_rgba(67,48,46,0.15)] border border-white/50">
           {/* Header of mockup */}
           <div className="flex justify-between items-center mb-4 md:mb-6 border-b border-lab-text/10 pb-4">
             <div className="flex items-center space-x-3">
@@ -61,7 +61,7 @@ export default function HeroAnimation() {
         </div>
 
         {/* Floating Elements */}
-        <div className="absolute -top-6 -right-6 md:-top-10 md:-right-10 bg-white/90 backdrop-blur-xl p-4 rounded-2xl z-30 shadow-2xl shadow-paper-shadow border border-white/50 animate-float">
+        <div className="absolute -top-6 -right-6 md:-top-10 md:-right-10 bg-white/90 backdrop-blur-xl p-4 rounded-2xl z-30 shadow-[0_20px_40px_-12px_rgba(67,48,46,0.2)] border border-white/50 animate-float">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
               <Check size={16} />
