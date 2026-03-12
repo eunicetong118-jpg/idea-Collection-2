@@ -171,7 +171,7 @@ export default function RegisterPage() {
                 <div className="w-full border-t border-lab-ui/20"></div>
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-4 bg-transparent text-lab-text/40 font-bold uppercase tracking-widest">Existing Subsystem?</span>
+                <span className="px-4 bg-white text-lab-text/40 font-bold uppercase tracking-widest">Already have an account?</span>
               </div>
             </div>
 
@@ -180,7 +180,7 @@ export default function RegisterPage() {
                 href="/login"
                 className="w-full flex justify-center py-4 px-4 border-2 border-lab-ui/20 rounded-full text-xs font-bold uppercase tracking-widest text-lab-text hover:bg-lab-ui/10 transition-all active:scale-[0.98]"
               >
-                Access_Login
+                Login
               </Link>
             </div>
           </div>
