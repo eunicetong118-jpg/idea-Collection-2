@@ -150,7 +150,7 @@ export default function LoginPage() {
                 {loading ? (
                   <Loader2 className="animate-spin" size={20} />
                 ) : (
-                  "Initiate_Login"
+                  "Login"
                 )}
               </button>
             </div>
