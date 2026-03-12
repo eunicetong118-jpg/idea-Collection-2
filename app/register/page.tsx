@@ -78,7 +78,7 @@ export default function RegisterPage() {
       </div>
 
       <div className="mt-8 relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="glass-panel py-10 px-4 shadow-2xl shadow-paper-shadow sm:rounded-[2.5rem] sm:px-10 border-none">
+        <div className="bg-white py-10 px-4 shadow-2xl shadow-paper-shadow sm:rounded-[2.5rem] sm:px-10 border-none">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-500/10 border-l-4 border-red-500 p-4 text-xs font-bold text-red-700 rounded-r-xl">
