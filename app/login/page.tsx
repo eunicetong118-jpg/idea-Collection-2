@@ -161,9 +161,6 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-lab-ui/20"></div>
               </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="px-4 bg-transparent text-lab-text/40 font-bold uppercase tracking-widest">New_To_Subsystem?</span>
-              </div>
             </div>
 
             <div className="mt-8">
