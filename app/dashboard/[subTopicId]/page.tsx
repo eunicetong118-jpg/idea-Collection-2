@@ -6,6 +6,7 @@ import IdeaCard from "@/components/IdeaCard";
 import IdeaForm from "@/components/IdeaForm";
 import { Plus } from "lucide-react";
 import { clsx } from "clsx";
+import { FEATURE_FLAGS } from "@/lib/feature-flags";
 
 interface SubTopic {
   id: string;
@@ -116,14 +117,28 @@ export default function DashboardPage() {
       .then((data) => setIdeas(data));
   };
 
+  const isGlass = FEATURE_FLAGS.ENABLE_LIQUID_GLASS;
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-lab-bg flex items-center justify-center">
+      <div className={clsx(
+        "min-h-screen flex items-center justify-center",
+        isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]" : "bg-lab-bg"
+      )}>
         <div className="w-48">
-          <div className="h-1 w-full bg-lab-ui/20 rounded-full overflow-hidden">
-            <div className="h-full bg-lab-ui animate-pulse w-full" />
+          <div className={clsx(
+            "h-1 w-full rounded-full overflow-hidden",
+            isGlass ? "bg-white/20" : "bg-lab-ui/20"
+          )}>
+            <div className={clsx(
+              "h-full animate-pulse w-full",
+              isGlass ? "bg-glass-secondary" : "bg-lab-ui"
+            )} />
           </div>
-          <p className="text-[10px] uppercase tracking-[0.4em] opacity-40 mt-4 text-center text-lab-text">
+          <p className={clsx(
+            "text-[10px] uppercase tracking-[0.4em] opacity-40 mt-4 text-center",
+            isGlass ? "text-white" : "text-lab-text"
+          )}>
             Unfolding matrix...
           </p>
         </div>
@@ -132,12 +147,29 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-lab-bg text-lab-text pb-20 relative overflow-hidden">
-      <div className="fixed inset-0 paper-texture z-0" />
+    <div className={clsx(
+      "min-h-screen pb-20 relative overflow-hidden",
+      isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] text-white" : "bg-lab-bg text-lab-text"
+    )}>
+      {isGlass ? (
+        <>
+          <div className="glass-bg-animated" />
+          <div className="glass-orbs">
+            <div className="glass-orb glass-orb-1" />
+            <div className="glass-orb glass-orb-2" />
+            <div className="glass-orb glass-orb-3" />
+          </div>
+        </>
+      ) : (
+        <div className="fixed inset-0 paper-texture z-0" />
+      )}
 
       {/* Sub-topics Navigation */}
-      <div className="sticky top-16 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className={clsx(
+        "sticky top-20 z-30 transition-all duration-300",
+        isGlass ? "bg-black/20 backdrop-blur-md border-b border-white/5" : "bg-lab-bg/80 backdrop-blur-md border-b border-lab-ui/10"
+      )}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <nav className="flex items-center space-x-2 overflow-x-auto scrollbar-hide">
             {subTopics.map((st) => (
               <button
@@ -146,8 +178,12 @@ export default function DashboardPage() {
                 className={clsx(
                   "px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
                   subTopicId === st.id
-                    ? "bg-lab-ui text-lab-text shadow-md"
-                    : "text-lab-text/60 hover:bg-lab-ui/20"
+                    ? isGlass
+                      ? "glass-button text-white shadow-md"
+                      : "bg-lab-ui text-lab-text shadow-md"
+                    : isGlass
+                      ? "text-white/60 hover:bg-white/10"
+                      : "text-lab-text/60 hover:bg-lab-ui/20"
                 )}
               >
                 {st.title.replace(/\s+/g, '_').toUpperCase()}
@@ -157,18 +193,34 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12 relative z-10">
-        <header className="mb-16 ink-reveal [animation-delay:200ms]">
-          <h1 className="text-5xl font-bold tracking-tighter text-lab-text italic">
-            Share your <span className="text-lab-ui">thoughts with us</span>
+      <main className="max-w-7xl mx-auto px-6 lg:px-8 pt-32 pb-12 relative z-10">
+        <header className={clsx(
+          "mb-16",
+          isGlass ? "glass-reveal [animation-delay:200ms]" : "ink-reveal [animation-delay:200ms]"
+        )}>
+          <h1 className={clsx(
+            "text-5xl font-bold tracking-tighter italic",
+            isGlass ? "text-white" : "text-lab-text"
+          )}>
+            Share your <span className={isGlass ? "text-glass-secondary" : "text-lab-ui"}>thoughts with us</span>
           </h1>
         </header>
         {sortedIdeas.length === 0 ? (
-          <div className="text-center py-32 bg-white/60 rounded-[3rem] shadow-2xl shadow-paper-shadow ink-reveal [animation-delay:400ms]">
-            <div className="mx-auto h-20 w-20 bg-lab-ui/20 rounded-full flex items-center justify-center mb-6">
-              <Plus size={40} className="text-lab-ui" />
+          <div className={clsx(
+            "text-center py-32 rounded-[3rem] shadow-2xl",
+            isGlass ? "glass-card" : "bg-white/60 shadow-paper-shadow",
+            isGlass ? "glass-reveal [animation-delay:400ms]" : "ink-reveal [animation-delay:400ms]"
+          )}>
+            <div className={clsx(
+              "mx-auto h-20 w-20 rounded-full flex items-center justify-center mb-6",
+              isGlass ? "bg-white/20" : "bg-lab-ui/20"
+            )}>
+              <Plus size={40} className={isGlass ? "text-glass-secondary" : "text-lab-ui"} />
             </div>
-            <h2 className="text-3xl font-bold text-lab-text mb-3 tracking-tighter">Waiting for some nice ideas...</h2>
+            <h2 className={clsx(
+              "text-3xl font-bold mb-3 tracking-tighter",
+              isGlass ? "text-white" : "text-lab-text"
+            )}>Waiting for some nice ideas...</h2>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -176,7 +228,7 @@ export default function DashboardPage() {
               <div
                 key={idea._id}
                 id={idea._id}
-                className="ink-reveal"
+                className={isGlass ? "glass-reveal" : "ink-reveal"}
                 style={{ animationDelay: `${400 + index * 100}ms` }}
               >
                 <IdeaCard idea={idea} />
@@ -189,33 +241,67 @@ export default function DashboardPage() {
       {/* Floating Add Button */}
       <button
         onClick={() => setShowAddModal(true)}
-        className="fixed bottom-8 right-8 h-14 w-14 bg-lab-ui text-lab-text rounded-full shadow-xl shadow-paper-shadow hover:bg-lab-ui/80 flex items-center justify-center transition-all hover:scale-110 active:scale-95 z-40"
+        className={clsx(
+          "fixed bottom-8 right-8 h-14 w-14 rounded-full shadow-xl transition-all z-40",
+          isGlass
+            ? "glass-button text-white hover:scale-110"
+            : "bg-lab-ui text-lab-text shadow-paper-shadow hover:bg-lab-ui/80 hover:scale-110 active:scale-95"
+        )}
       >
         <Plus size={24} />
       </button>
 
       {/* Idea Form Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-lab-bg/95 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-300 overflow-y-auto">
-          <div className="bg-white rounded-[2rem] w-full max-w-4xl my-8 overflow-hidden shadow-2xl shadow-paper-shadow animate-in zoom-in-95 duration-300 border-none relative">
-            <div className="p-8 sticky top-0 bg-white z-10 flex justify-between items-center border-b border-lab-ui/10">
+        <div className={clsx(
+          "fixed inset-0 flex items-center justify-center p-4 z-50 animate-in fade-in duration-300 overflow-y-auto",
+          isGlass ? "bg-black/40 backdrop-blur-md" : "bg-lab-bg/95 backdrop-blur-md"
+        )}>
+          <div className={clsx(
+            "w-full max-w-4xl my-8 overflow-hidden shadow-2xl border-none relative",
+            isGlass ? "glass-card" : "bg-white rounded-[2rem]"
+          )}>
+            <div className={clsx(
+              "p-8 sticky top-0 z-10 flex justify-between items-center border-b",
+              isGlass ? "bg-glass-text/95 border-white/10" : "bg-white border-lab-ui/10"
+            )}>
               <div>
-                <h2 className="text-2xl font-bold tracking-tight text-lab-text">Idea Submission Form</h2>
-                <p className="text-[10px] uppercase tracking-[0.3em] opacity-40 font-bold mt-1">Initialize collective synchronization sequence</p>
+                <h2 className={clsx(
+                  "text-2xl font-bold tracking-tight",
+                  isGlass ? "text-white" : "text-lab-text"
+                )}>Idea Submission Form</h2>
+                <p className={clsx(
+                  "text-[10px] uppercase tracking-[0.3em] opacity-40 font-bold mt-1",
+                  isGlass ? "text-white" : "text-lab-text"
+                )}>Initialize collective synchronization sequence</p>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="w-10 h-10 rounded-full flex items-center justify-center bg-lab-ui/10 text-lab-text/40 hover:bg-lab-ui hover:text-lab-text transition-all"
+                className={clsx(
+                  "w-10 h-10 rounded-full flex items-center justify-center transition-all",
+                  isGlass
+                    ? "bg-white/10 text-white/40 hover:bg-white/20 hover:text-white"
+                    : "bg-lab-ui/10 text-lab-text/40 hover:bg-lab-ui hover:text-lab-text"
+                )}
               >
                 <Plus size={24} className="rotate-45" />
               </button>
             </div>
-            <div className="p-10 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+            <div className={clsx(
+              "p-10 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar",
+              isGlass ? "" : ""
+            )}>
               <IdeaForm subTopicId={subTopicId} onSuccess={handleIdeaSuccess} />
             </div>
             {/* Modal Corner Accents */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-lab-ui/20 pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-lab-ui/20 pointer-events-none" />
+            <div className={clsx(
+              "absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 pointer-events-none",
+              isGlass ? "border-white/20" : "border-lab-ui/20"
+            )} />
+            <div className={clsx(
+              "absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 pointer-events-none",
+              isGlass ? "border-white/20" : "border-lab-ui/20"
+            )} />
           </div>
         </div>
       )}

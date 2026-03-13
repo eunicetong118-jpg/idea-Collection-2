@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Trash2, Edit2, Plus, Loader2 } from "lucide-react";
 import Toast, { ToastType } from "../../components/Toast";
 import clsx from "clsx";
+import { FEATURE_FLAGS } from "@/lib/feature-flags";
 
 interface SubTopic {
   id: string;
@@ -253,10 +254,15 @@ export default function AdminPage() {
     }
   };
 
+  const isGlass = FEATURE_FLAGS.ENABLE_LIQUID_GLASS;
+
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-lab-bg flex items-center justify-center">
-        <Loader2 className="animate-spin text-lab-ui" size={32} />
+      <div className={clsx(
+        "min-h-screen flex items-center justify-center",
+        isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]" : "bg-lab-bg"
+      )}>
+        <Loader2 className={clsx("animate-spin", isGlass ? "text-glass-secondary" : "text-lab-ui")} size={32} />
       </div>
     );
   }
@@ -264,30 +270,60 @@ export default function AdminPage() {
   if (!(session?.user as any)?.isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-lab-bg text-lab-text py-12 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
-      {/* Paper Texture Layer */}
-      <div className="fixed inset-0 paper-texture z-0" />
+    <div className={clsx(
+      "min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden",
+      isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] text-white" : "bg-lab-bg text-lab-text"
+    )}>
+      {/* Background Layer */}
+      {isGlass ? (
+        <>
+          <div className="glass-bg-animated" />
+          <div className="glass-orbs">
+            <div className="glass-orb glass-orb-1" />
+            <div className="glass-orb glass-orb-2" />
+            <div className="glass-orb glass-orb-3" />
+          </div>
+        </>
+      ) : (
+        <div className="fixed inset-0 paper-texture z-0" />
+      )}
 
       <div className="max-w-4xl mx-auto relative z-10">
         <header className="mb-12">
-          <h1 className="text-4xl font-bold tracking-tight text-lab-text">Admin Control Panel</h1>
+          <h1 className={clsx("text-4xl font-bold tracking-tight", isGlass ? "text-white" : "text-lab-text")}>Admin Control Panel</h1>
         </header>
 
         {/* Main Theme Section */}
-        <section className="mb-8 p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Main Theme Config</h2>
+        <section className={clsx(
+          "mb-8 p-8 rounded-[2rem] border-none shadow-xl",
+          isGlass ? "glass-card" : "bg-white shadow-paper-shadow"
+        )}>
+          <h2 className={clsx(
+            "text-lg font-bold uppercase tracking-widest mb-6 ml-1",
+            isGlass ? "text-white/40" : "text-lab-text/40"
+          )}>Main Theme Config</h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <input
               type="text"
               value={mainTheme}
               onChange={(e) => setMainTheme(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && updateTheme()}
-              className="flex-1 px-5 py-4 bg-lab-ui/10 border-none rounded-2xl text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20"
+              className={clsx(
+                "flex-1 px-5 py-4 border-none rounded-2xl focus:outline-none transition-all",
+                isGlass
+                  ? "glass-input text-white placeholder:text-white/20"
+                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+              )}
               placeholder="e.g., Q1 Product Roadmap"
             />
             <button
               onClick={updateTheme}
-              className="bg-lab-text text-lab-bg px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui hover:text-lab-text transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
+              className={clsx(
+                "px-8 py-4 rounded-full font-bold uppercase tracking-widest transition-all active:scale-[0.98]",
+                isGlass
+                  ? "glass-button text-white"
+                  : "bg-lab-text text-lab-bg hover:bg-lab-ui hover:text-lab-text shadow-lg shadow-paper-shadow"
+              )}
             >
               Update System
             </button>
@@ -295,8 +331,14 @@ export default function AdminPage() {
         </section>
 
         {/* Sub-topics Section */}
-        <section className="mb-8 p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Sector Management</h2>
+        <section className={clsx(
+          "mb-8 p-8 rounded-[2rem] border-none shadow-xl",
+          isGlass ? "glass-card" : "bg-white shadow-paper-shadow"
+        )}>
+          <h2 className={clsx(
+            "text-lg font-bold uppercase tracking-widest mb-6 ml-1",
+            isGlass ? "text-white/40" : "text-lab-text/40"
+          )}>Sector Management</h2>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
@@ -304,31 +346,44 @@ export default function AdminPage() {
               value={newSubTopic}
               onChange={(e) => setNewSubTopic(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addSubTopic()}
-              className="flex-1 px-5 py-4 bg-lab-ui/10 border-none rounded-2xl text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20"
+              className={clsx(
+                "flex-1 px-5 py-4 border-none rounded-2xl focus:outline-none transition-all",
+                isGlass
+                  ? "glass-input text-white placeholder:text-white/20"
+                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+              )}
               placeholder="e.g., Marketing Sector"
             />
             <button
               onClick={addSubTopic}
-              className="bg-lab-ui text-lab-text px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui/80 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
+              className={clsx(
+                "px-8 py-4 rounded-full font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-[0.98]",
+                isGlass
+                  ? "glass-button-secondary text-white"
+                  : "bg-lab-ui text-lab-text hover:bg-lab-ui/80 shadow-lg shadow-paper-shadow"
+              )}
             >
               <Plus size={20} />
               <span>Add Sector</span>
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-lab-ui/10 bg-lab-ui/5">
+          <div className={clsx(
+            "overflow-hidden rounded-2xl border",
+            isGlass ? "border-white/10 bg-white/5" : "border-lab-ui/10 bg-lab-ui/5"
+          )}>
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-lab-ui/10">
-                  <th className="text-left py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Title</th>
-                  <th className="text-center py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Density</th>
-                  <th className="text-right py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Actions</th>
+                <tr className={isGlass ? "bg-white/10" : "bg-lab-ui/10"}>
+                  <th className={clsx("text-left py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isGlass ? "text-white/40" : "text-lab-text/40")}>Title</th>
+                  <th className={clsx("text-center py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isGlass ? "text-white/40" : "text-lab-text/40")}>Density</th>
+                  <th className={clsx("text-right py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isGlass ? "text-white/40" : "text-lab-text/40")}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-lab-ui/10">
+              <tbody className={isGlass ? "divide-y divide-white/10" : "divide-y divide-lab-ui/10"}>
                 {subTopics.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="py-10 text-center text-lab-text/30 italic">
+                    <td colSpan={3} className={clsx("py-10 text-center italic", isGlass ? "text-white/30" : "text-lab-text/30")}>
                       No active sectors detected.
                     </td>
                   </tr>

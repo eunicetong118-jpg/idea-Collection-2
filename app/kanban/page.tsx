@@ -33,6 +33,7 @@ export default function KanbanPage() {
   const [loading, setLoading] = useState(true);
 
   const isAdmin = (session?.user as any)?.isAdmin === true;
+  const isGlass = FEATURE_FLAGS.ENABLE_LIQUID_GLASS;
 
   useEffect(() => {
     if (!FEATURE_FLAGS.ENABLE_KANBAN_BOARD) {
@@ -153,12 +154,24 @@ export default function KanbanPage() {
 
   if (loading || authStatus === "loading") {
     return (
-      <div className="min-h-screen bg-lab-bg flex items-center justify-center">
+      <div className={clsx(
+        "min-h-screen flex items-center justify-center",
+        isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]" : "bg-lab-bg"
+      )}>
         <div className="w-48">
-          <div className="h-1 w-full bg-lab-ui/20 rounded-full overflow-hidden">
-            <div className="h-full bg-lab-ui animate-pulse w-full" />
+          <div className={clsx(
+            "h-1 w-full rounded-full overflow-hidden",
+            isGlass ? "bg-white/20" : "bg-lab-ui/20"
+          )}>
+            <div className={clsx(
+              "h-full animate-pulse w-full",
+              isGlass ? "bg-glass-secondary" : "bg-lab-ui"
+            )} />
           </div>
-          <p className="text-[10px] uppercase tracking-[0.4em] opacity-40 mt-4 text-center text-lab-text">
+          <p className={clsx(
+            "text-[10px] uppercase tracking-[0.4em] opacity-40 mt-4 text-center",
+            isGlass ? "text-white" : "text-lab-text"
+          )}>
             Initializing board...
           </p>
         </div>
@@ -167,20 +180,40 @@ export default function KanbanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-lab-bg text-lab-text pb-20 relative overflow-hidden flex flex-col">
-      <div className="fixed inset-0 paper-texture z-0" />
+    <div className={clsx(
+      "min-h-screen pb-20 relative overflow-hidden flex flex-col",
+      isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] text-white" : "bg-lab-bg text-lab-text"
+    )}>
+      {isGlass ? (
+        <>
+          <div className="glass-bg-animated" />
+          <div className="glass-orbs">
+            <div className="glass-orb glass-orb-1" />
+            <div className="glass-orb glass-orb-2" />
+            <div className="glass-orb glass-orb-3" />
+          </div>
+        </>
+      ) : (
+        <div className="fixed inset-0 paper-texture z-0" />
+      )}
 
       <main className="flex-1 flex flex-col max-w-[1600px] mx-auto w-full px-6 lg:px-8 py-12 relative z-10 overflow-hidden">
-        <header className="mb-12 ink-reveal">
+        <header className={clsx("mb-12", isGlass ? "glass-reveal" : "ink-reveal")}>
           <div className="flex items-center gap-4 mb-4">
-            <div className="bg-lab-ui/40 p-3 rounded-full text-lab-text">
+            <div className={clsx(
+              "p-3 rounded-full",
+              isGlass ? "bg-white/20 text-white" : "bg-lab-ui/40 text-lab-text"
+            )}>
               <Columns size={24} />
             </div>
-            <h1 className="text-4xl font-bold tracking-tighter text-lab-text italic">
-              Idea <span className="text-lab-ui">Pipeline</span>
+            <h1 className={clsx("text-4xl font-bold tracking-tighter italic", isGlass ? "text-white" : "text-lab-text")}>
+              Idea <span className={isGlass ? "text-glass-secondary" : "text-lab-ui"}>Pipeline</span>
             </h1>
           </div>
-          <p className="text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold">
+          <p className={clsx(
+            "text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold",
+            isGlass ? "text-white" : ""
+          )}>
             Synchronizing collective intelligence across implementation nodes
           </p>
         </header>
@@ -190,13 +223,25 @@ export default function KanbanPage() {
             {COLUMNS.map((column) => (
               <div
                 key={column.id}
-                className="flex-1 min-w-[300px] flex flex-col bg-white/40 rounded-[2rem] border border-lab-ui/10 shadow-xl shadow-paper-shadow/5 overflow-hidden"
+                className={clsx(
+                  "flex-1 min-w-[300px] flex flex-col rounded-[2rem] shadow-xl overflow-hidden",
+                  isGlass ? "glass-card" : "bg-white/40 border border-lab-ui/10 shadow-paper-shadow/5"
+                )}
               >
-                <div className="p-6 border-b border-lab-ui/10 flex items-center justify-between bg-white/20 backdrop-blur-sm">
-                  <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-lab-text/60">
+                <div className={clsx(
+                  "p-6 border-b flex items-center justify-between",
+                  isGlass ? "border-white/10 bg-white/10 backdrop-blur-sm" : "border-lab-ui/10 bg-white/20 backdrop-blur-sm"
+                )}>
+                  <h2 className={clsx(
+                    "text-[11px] font-black uppercase tracking-[0.3em]",
+                    isGlass ? "text-white/60" : "text-lab-text/60"
+                  )}>
                     {column.title.replace(/\s+/g, '_')}
                   </h2>
-                  <span className="bg-lab-ui/30 text-lab-text/60 text-[10px] font-bold px-3 py-1 rounded-full">
+                  <span className={clsx(
+                    "text-[10px] font-bold px-3 py-1 rounded-full",
+                    isGlass ? "bg-white/20 text-white/60" : "bg-lab-ui/30 text-lab-text/60"
+                  )}>
                     {columnsData[column.id].length}
                   </span>
                 </div>
@@ -208,7 +253,9 @@ export default function KanbanPage() {
                       ref={provided.innerRef}
                       className={clsx(
                         "flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar transition-colors duration-300",
-                        snapshot.isDraggingOver ? "bg-lab-ui/5" : "bg-transparent"
+                        snapshot.isDraggingOver
+                          ? isGlass ? "bg-white/5" : "bg-lab-ui/5"
+                          : "bg-transparent"
                       )}
                     >
                       {columnsData[column.id].map((idea, index) => (
@@ -229,29 +276,53 @@ export default function KanbanPage() {
                                 snapshot.isDragging ? "scale-105 z-50" : "hover:translate-y-[-4px]"
                               )}
                             >
-                              {/* Card Style: Washi Paper Matrix */}
-                              <div className="absolute inset-0 bg-white/20 rounded-2xl translate-x-1 translate-y-1 -z-10" />
-                              <div className="bg-white/90 rounded-2xl p-6 shadow-lg shadow-paper-shadow/10 border border-lab-ui/10 relative overflow-hidden cursor-pointer">
-                                <div className="paper-texture absolute inset-0 opacity-10" />
-
-                                <h3 className="text-lg font-bold tracking-tight text-lab-text mb-4 leading-tight">
-                                  {idea.title}
-                                </h3>
-
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-lab-ui/40 flex items-center justify-center text-[10px] font-bold">
-                                      {idea.userName.charAt(0).toUpperCase()}
+                              {/* Card Style */}
+                              {isGlass ? (
+                                <>
+                                  <div className="absolute inset-0 bg-white/5 rounded-2xl translate-x-1 translate-y-1 -z-10" />
+                                  <div className="glass-card p-6 relative overflow-hidden cursor-pointer">
+                                    <h3 className="text-lg font-bold tracking-tight text-white mb-4 leading-tight">
+                                      {idea.title}
+                                    </h3>
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-bold text-white">
+                                          {idea.userName.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/40">
+                                          {idea.userName.split(' ')[0]}
+                                        </span>
+                                      </div>
+                                      <div className="text-glass-secondary group-hover:translate-x-1 transition-transform">
+                                        <ArrowRight size={14} />
+                                      </div>
                                     </div>
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-lab-text/40">
-                                      {idea.userName.split(' ')[0]}
-                                    </span>
                                   </div>
-                                  <div className="text-lab-ui group-hover:translate-x-1 transition-transform">
-                                    <ArrowRight size={14} />
+                                </>
+                              ) : (
+                                <>
+                                  <div className="absolute inset-0 bg-white/20 rounded-2xl translate-x-1 translate-y-1 -z-10" />
+                                  <div className="bg-white/90 rounded-2xl p-6 shadow-lg shadow-paper-shadow/10 border border-lab-ui/10 relative overflow-hidden cursor-pointer">
+                                    <div className="paper-texture absolute inset-0 opacity-10" />
+                                    <h3 className="text-lg font-bold tracking-tight text-lab-text mb-4 leading-tight">
+                                      {idea.title}
+                                    </h3>
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded-full bg-lab-ui/40 flex items-center justify-center text-[10px] font-bold text-lab-text">
+                                          {idea.userName.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-lab-text/40">
+                                          {idea.userName.split(' ')[0]}
+                                        </span>
+                                      </div>
+                                      <div className="text-lab-ui group-hover:translate-x-1 transition-transform">
+                                        <ArrowRight size={14} />
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                              </div>
+                                </>
+                              )}
                             </div>
                           )}
                         </Draggable>

@@ -9,6 +9,20 @@
   --paper-shadow: rgba(67, 48, 46, 0.08);
 }
 
+/* Liquid Glass Design Tokens */
+:root {
+  --glass-primary: #A855F7;
+  --glass-secondary: #2DD4BF;
+  --glass-accent: #BAE6FD;
+  --glass-bg: #FFFFFF;
+  --glass-text: #1E293B;
+  --glass-surface: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-highlight: rgba(255, 255, 255, 0.4);
+  --glass-shadow: rgba(30, 41, 59, 0.1);
+  --glass-blur: 16px;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -18,6 +32,16 @@
   --color-paper-shadow: var(--paper-shadow);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-glass-primary: var(--glass-primary);
+  --color-glass-secondary: var(--glass-secondary);
+  --color-glass-accent: var(--glass-accent);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-text: var(--glass-text);
+  --color-glass-surface: var(--glass-surface);
+  --color-glass-border: var(--glass-border);
+  --color-glass-highlight: var(--glass-highlight);
+  --color-glass-shadow: var(--glass-shadow);
 
   --animate-float: float 6s ease-in-out infinite;
 
@@ -92,4 +116,264 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   opacity: 0.04;
   pointer-events: none;
+}
+
+/* ========================================
+   LIQUID GLASS DESIGN SYSTEM
+   Stack Model: Outer Shell + Stabilized Plate + Content
+   ======================================== */
+
+/* Glass Shell - The outer translucent layer */
+.glass-shell {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+    0 8px 32px -8px rgba(30, 41, 59, 0.1);
+  position: relative;
+}
+
+/* Highlight Band - The luminous top edge */
+.glass-shell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+}
+
+/* Inner Stroke - Separates content from shell */
+.glass-shell::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+/* Stabilized Plate - Protects content from glass noise */
+.glass-plate {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: inherit;
+  margin: 2px;
+}
+
+/* Content Layer - Actual content */
+.glass-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Glass Card - Full stack implementation */
+.glass-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+    0 8px 32px -8px rgba(30, 41, 59, 0.15),
+    0 32px 64px -16px rgba(30, 41, 59, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+}
+
+/* Glass Input/Form Elements */
+.glass-input {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: var(--glass-primary);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+}
+
+/* Glass Button States */
+.glass-button {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.9), rgba(168, 85, 247, 0.7));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 4px 16px -4px rgba(168, 85, 247, 0.4),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.glass-button:hover {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 1), rgba(168, 85, 247, 0.8));
+  box-shadow:
+    0 8px 24px -4px rgba(168, 85, 247, 0.5),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 8px -2px rgba(168, 85, 247, 0.4),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Secondary Glass Button */
+.glass-button-secondary {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.9), rgba(45, 212, 191, 0.7));
+  box-shadow:
+    0 4px 16px -4px rgba(45, 212, 191, 0.4),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+}
+
+.glass-button-secondary:hover {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 1), rgba(45, 212, 191, 0.8));
+  box-shadow:
+    0 8px 24px -4px rgba(45, 212, 191, 0.5),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Glass Background Gradient */
+.glass-gradient-bg {
+  background: linear-gradient(135deg,
+    rgba(168, 85, 247, 0.05) 0%,
+    rgba(45, 212, 191, 0.05) 50%,
+    rgba(186, 230, 253, 0.08) 100%
+  );
+}
+
+/* Animated Glass Glow */
+@keyframes glass-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+.glass-glow {
+  animation: glass-glow 3s ease-in-out infinite;
+}
+
+/* Glass entrance animation (replaces ink-reveal for glass theme) */
+@keyframes glass-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    backdrop-filter: blur(20px);
+  }
+}
+
+.glass-reveal {
+  animation: glass-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+/* Glass Animated Background */
+.glass-bg-animated {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168, 85, 247, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(45, 212, 191, 0.12), transparent),
+    radial-gradient(ellipse 50% 30% at 50% 80%, rgba(186, 230, 253, 0.1), transparent),
+    linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+  animation: glass-bg-shift 20s ease-in-out infinite;
+}
+
+@keyframes glass-bg-shift {
+  0%, 100% {
+    background-position: 0% 0%, 100% 100%, 50% 100%, 0% 0%;
+  }
+  25% {
+    background-position: 100% 0%, 0% 100%, 25% 50%, 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%, 0% 0%, 75% 25%, 0% 0%;
+  }
+  75% {
+    background-position: 0% 100%, 100% 0%, 50% 75%, 0% 0%;
+  }
+}
+
+/* Floating orbs for depth */
+.glass-orbs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.glass-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: float-orb 25s ease-in-out infinite;
+}
+
+.glass-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: rgba(168, 85, 247, 0.2);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.glass-orb-2 {
+  width: 300px;
+  height: 300px;
+  background: rgba(45, 212, 191, 0.15);
+  top: 60%;
+  right: 10%;
+  animation-delay: -8s;
+}
+
+.glass-orb-3 {
+  width: 250px;
+  height: 250px;
+  background: rgba(186, 230, 253, 0.2);
+  bottom: 20%;
+  left: 30%;
+  animation-delay: -16s;
+}
+
+@keyframes float-orb {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(50px, -30px) scale(1.1);
+  }
+  50% {
+    transform: translate(-20px, 40px) scale(0.95);
+  }
+  75% {
+    transform: translate(-40px, -20px) scale(1.05);
+  }
 }

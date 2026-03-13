@@ -42,15 +42,22 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
-        const email = session.user.email || "";
+        // Use email from token if available, fallback to session.user.email
+        const email = token?.email || session.user.email || "";
         const adminEmails = (process.env.ADMIN_EMAILS || "").split(",");
         (session.user as any).isAdmin = adminEmails.includes(email);
+        // Ensure email is set from token
+        if (token?.email) {
+          session.user.email = token.email as string;
+        }
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token.email = user.email;
+        token.name = user.name;
+        token.id = user.id;
       }
       return token;
     },
