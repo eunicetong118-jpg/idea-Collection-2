@@ -111,6 +111,7 @@
 
 body {
   background: var(--background);
+  transition: background-color 0.5s ease;
   color: var(--foreground);
   font-family: var(--font-sans);
   position: relative;
