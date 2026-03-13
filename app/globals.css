@@ -21,6 +21,14 @@
   --glass-highlight: rgba(255, 255, 255, 0.4);
   --glass-shadow: rgba(30, 41, 59, 0.1);
   --glass-blur: 16px;
+
+  /* Liquid Glass V2 Design Tokens (Light Theme) */
+  --lg2-bg: #F8F5F2; /* Soft neutral off-white/beige */
+  --lg2-glass: rgba(255, 255, 255, 0.4);
+  --lg2-border: rgba(255, 255, 255, 0.6);
+  --lg2-shadow: rgba(0, 0, 0, 0.12);
+  --lg2-purple: linear-gradient(135deg, rgba(168, 85, 247, 0.8), rgba(126, 34, 206, 0.6));
+  --lg2-teal: linear-gradient(135deg, rgba(45, 212, 191, 0.8), rgba(13, 148, 136, 0.6));
 }
 
 @theme inline {
@@ -42,6 +50,9 @@
   --color-glass-border: var(--glass-border);
   --color-glass-highlight: var(--glass-highlight);
   --color-glass-shadow: var(--glass-shadow);
+
+  --color-lg2-bg: var(--lg2-bg);
+  --color-lg2-glass: var(--lg2-glass);
 
   --animate-float: float 6s ease-in-out infinite;
 
@@ -375,5 +386,77 @@ body {
   }
   75% {
     transform: translate(-40px, -20px) scale(1.05);
+  }
+}
+
+/* ========================================
+   LIQUID GLASS V2 DESIGN SYSTEM (LIGHT)
+   ======================================== */
+
+.lg2-glass-board {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 0.8),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.05),
+    25px 30px 50px -10px rgba(0, 0, 0, 0.12);
+}
+
+.lg2-glass-bubble {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 0.8),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.05),
+    15px 15px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lg2-glass-bubble:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 1),
+    18px 20px 35px rgba(0, 0, 0, 0.12);
+}
+
+.lg2-liquid-purple {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.8), rgba(126, 34, 206, 0.6));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 0.5),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.1),
+    15px 15px 30px rgba(168, 85, 247, 0.2);
+}
+
+.lg2-liquid-teal {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.8), rgba(13, 148, 136, 0.6));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 0.5),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.1),
+    15px 15px 30px rgba(45, 212, 191, 0.2);
+}
+
+.lg2-reveal {
+  animation: lg2-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes lg2-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }

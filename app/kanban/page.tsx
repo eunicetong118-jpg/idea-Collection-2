@@ -34,6 +34,7 @@ export default function KanbanPage() {
 
   const isAdmin = (session?.user as any)?.isAdmin === true;
   const isGlass = FEATURE_FLAGS.ENABLE_LIQUID_GLASS;
+  const isLG2 = FEATURE_FLAGS.ENABLE_LIQUID_GLASS_V2;
 
   useEffect(() => {
     if (!FEATURE_FLAGS.ENABLE_KANBAN_BOARD) {
@@ -156,21 +157,23 @@ export default function KanbanPage() {
     return (
       <div className={clsx(
         "min-h-screen flex items-center justify-center",
-        isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]" : "bg-lab-bg"
+        isLG2
+          ? "bg-lg2-bg"
+          : (isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]" : "bg-lab-bg")
       )}>
         <div className="w-48">
           <div className={clsx(
             "h-1 w-full rounded-full overflow-hidden",
-            isGlass ? "bg-white/20" : "bg-lab-ui/20"
+            isLG2 ? "bg-slate-200" : (isGlass ? "bg-white/20" : "bg-lab-ui/20")
           )}>
             <div className={clsx(
               "h-full animate-pulse w-full",
-              isGlass ? "bg-glass-secondary" : "bg-lab-ui"
+              isLG2 ? "bg-teal-500" : (isGlass ? "bg-glass-secondary" : "bg-lab-ui")
             )} />
           </div>
           <p className={clsx(
             "text-[10px] uppercase tracking-[0.4em] opacity-40 mt-4 text-center",
-            isGlass ? "text-white" : "text-lab-text"
+            isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text")
           )}>
             Initializing board...
           </p>
@@ -181,38 +184,48 @@ export default function KanbanPage() {
 
   return (
     <div className={clsx(
-      "min-h-screen pb-20 relative overflow-hidden flex flex-col",
-      isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] text-white" : "bg-lab-bg text-lab-text"
+      "min-h-screen pb-20 relative overflow-hidden flex flex-col transition-colors duration-500",
+      isLG2
+        ? "bg-lg2-bg text-slate-800"
+        : (isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] text-white" : "bg-lab-bg text-lab-text")
     )}>
-      {isGlass ? (
-        <>
-          <div className="glass-bg-animated" />
-          <div className="glass-orbs">
-            <div className="glass-orb glass-orb-1" />
-            <div className="glass-orb glass-orb-2" />
-            <div className="glass-orb glass-orb-3" />
-          </div>
-        </>
+      {isLG2 ? (
+        <div className="fixed inset-0 pointer-events-none opacity-20">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,#A855F7_0%,transparent_25%),radial-gradient(circle_at_80%_80%,#2DD4BF_0%,transparent_25%)] blur-3xl" />
+        </div>
       ) : (
-        <div className="fixed inset-0 paper-texture z-0" />
+        isGlass ? (
+          <>
+            <div className="glass-bg-animated" />
+            <div className="glass-orbs">
+              <div className="glass-orb glass-orb-1" />
+              <div className="glass-orb glass-orb-2" />
+              <div className="glass-orb glass-orb-3" />
+            </div>
+          </>
+        ) : (
+          <div className="fixed inset-0 paper-texture z-0" />
+        )
       )}
 
       <main className="flex-1 flex flex-col max-w-[1600px] mx-auto w-full px-6 lg:px-8 py-12 relative z-10 overflow-hidden">
-        <header className={clsx("mb-12", isGlass ? "glass-reveal" : "ink-reveal")}>
+        <header className={clsx("mb-12", isLG2 ? "lg2-reveal" : (isGlass ? "glass-reveal" : "ink-reveal"))}>
           <div className="flex items-center gap-4 mb-4">
             <div className={clsx(
               "p-3 rounded-full",
-              isGlass ? "bg-white/20 text-white" : "bg-lab-ui/40 text-lab-text"
+              isLG2
+                ? "lg2-glass-bubble text-slate-800 border-white/40 shadow-xl"
+                : (isGlass ? "bg-white/20 text-white" : "bg-lab-ui/40 text-lab-text")
             )}>
               <Columns size={24} />
             </div>
-            <h1 className={clsx("text-4xl font-bold tracking-tighter italic", isGlass ? "text-white" : "text-lab-text")}>
-              Idea <span className={isGlass ? "text-glass-secondary" : "text-lab-ui"}>Pipeline</span>
+            <h1 className={clsx("text-4xl font-bold tracking-tighter italic", isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text"))}>
+              Idea <span className={isLG2 ? "text-teal-500" : (isGlass ? "text-glass-secondary" : "text-lab-ui")}>Pipeline</span>
             </h1>
           </div>
           <p className={clsx(
             "text-[10px] uppercase tracking-[0.4em] opacity-40 font-bold",
-            isGlass ? "text-white" : ""
+            isLG2 ? "text-slate-400" : (isGlass ? "text-white" : "")
           )}>
             Synchronizing collective intelligence across implementation nodes
           </p>
@@ -225,22 +238,24 @@ export default function KanbanPage() {
                 key={column.id}
                 className={clsx(
                   "flex-1 min-w-[300px] flex flex-col rounded-[2rem] shadow-xl overflow-hidden",
-                  isGlass ? "glass-card" : "bg-white/40 border border-lab-ui/10 shadow-paper-shadow/5"
+                  isLG2 ? "lg2-glass-board border-none" : (isGlass ? "glass-card" : "bg-white/40 border border-lab-ui/10 shadow-paper-shadow/5")
                 )}
               >
                 <div className={clsx(
                   "p-6 border-b flex items-center justify-between",
-                  isGlass ? "border-white/10 bg-white/10 backdrop-blur-sm" : "border-lab-ui/10 bg-white/20 backdrop-blur-sm"
+                  isLG2
+                    ? "border-slate-100 bg-white/20 backdrop-blur-md"
+                    : (isGlass ? "border-white/10 bg-white/10 backdrop-blur-sm" : "border-lab-ui/10 bg-white/20 backdrop-blur-sm")
                 )}>
                   <h2 className={clsx(
                     "text-[11px] font-black uppercase tracking-[0.3em]",
-                    isGlass ? "text-white/60" : "text-lab-text/60"
+                    isLG2 ? "text-slate-400" : (isGlass ? "text-white/60" : "text-lab-text/60")
                   )}>
                     {column.title.replace(/\s+/g, '_')}
                   </h2>
                   <span className={clsx(
                     "text-[10px] font-bold px-3 py-1 rounded-full",
-                    isGlass ? "bg-white/20 text-white/60" : "bg-lab-ui/30 text-lab-text/60"
+                    isLG2 ? "bg-slate-100 text-slate-400" : (isGlass ? "bg-white/20 text-white/60" : "bg-lab-ui/30 text-lab-text/60")
                   )}>
                     {columnsData[column.id].length}
                   </span>
@@ -254,7 +269,7 @@ export default function KanbanPage() {
                       className={clsx(
                         "flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar transition-colors duration-300",
                         snapshot.isDraggingOver
-                          ? isGlass ? "bg-white/5" : "bg-lab-ui/5"
+                          ? (isLG2 ? "bg-white/10" : (isGlass ? "bg-white/5" : "bg-lab-ui/5"))
                           : "bg-transparent"
                       )}
                     >
@@ -277,7 +292,26 @@ export default function KanbanPage() {
                               )}
                             >
                               {/* Card Style */}
-                              {isGlass ? (
+                              {isLG2 ? (
+                                <div className="lg2-glass-bubble p-6 relative overflow-hidden cursor-pointer border-white/40">
+                                  <h3 className="text-lg font-bold tracking-tight text-slate-800 mb-4 leading-tight">
+                                    {idea.title}
+                                  </h3>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-800">
+                                        {idea.userName.charAt(0).toUpperCase()}
+                                      </div>
+                                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+                                        {idea.userName.split(' ')[0]}
+                                      </span>
+                                    </div>
+                                    <div className="text-teal-500 group-hover:translate-x-1 transition-transform">
+                                      <ArrowRight size={14} />
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : isGlass ? (
                                 <>
                                   <div className="absolute inset-0 bg-white/5 rounded-2xl translate-x-1 translate-y-1 -z-10" />
                                   <div className="glass-card p-6 relative overflow-hidden cursor-pointer">

@@ -54,24 +54,25 @@ export default function Navbar() {
       ? "/admin"
       : "/";
 
+  const isGlass = FEATURE_FLAGS.ENABLE_LIQUID_GLASS;
+  const isLG2 = FEATURE_FLAGS.ENABLE_LIQUID_GLASS_V2;
+
   // Show loading skeleton during hydration to prevent flash
   if (!mounted) {
     return (
       <nav className={clsx(
         "sticky top-0 z-50 w-full h-20 font-sans",
-        FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-          ? "bg-transparent"
-          : "bg-lab-bg/60 backdrop-blur-lg border-b border-lab-ui/10"
+        isLG2 ? "bg-transparent" : (isGlass ? "bg-transparent" : "bg-lab-bg/60 backdrop-blur-lg border-b border-lab-ui/10")
       )}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className={clsx(
               "w-10 h-10 rounded-full animate-pulse",
-              FEATURE_FLAGS.ENABLE_LIQUID_GLASS ? "bg-white/20" : "bg-lab-ui/40"
+              isLG2 ? "bg-black/5" : (isGlass ? "bg-white/20" : "bg-lab-ui/40")
             )} />
             <div className={clsx(
               "h-4 w-24 rounded animate-pulse",
-              FEATURE_FLAGS.ENABLE_LIQUID_GLASS ? "bg-white/20" : "bg-lab-ui/40"
+              isLG2 ? "bg-black/5" : (isGlass ? "bg-white/20" : "bg-lab-ui/40")
             )} />
           </div>
         </div>
@@ -82,26 +83,26 @@ export default function Navbar() {
   return (
     <nav className={clsx(
       "sticky top-0 z-50 w-full h-20 transition-all font-sans",
-      FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-        ? "bg-transparent text-white"
-        : "bg-lab-bg/60 backdrop-blur-lg border-b border-lab-ui/10 text-lab-text"
+      isLG2
+        ? "bg-transparent text-slate-800"
+        : (isGlass ? "bg-transparent text-white" : "bg-lab-bg/60 backdrop-blur-lg border-b border-lab-ui/10 text-lab-text")
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
         {/* Left: Branding */}
         <Link href="/" className="flex items-center space-x-3 group">
           <div className={clsx(
             "p-2 rounded-full transition-all",
-            FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-              ? "bg-white/20 text-white group-hover:bg-white/30"
-              : "bg-lab-ui/40 text-lab-text group-hover:bg-lab-ui"
+            isLG2
+              ? "lg2-glass-bubble text-slate-800 group-hover:scale-110"
+              : (isGlass ? "bg-white/20 text-white group-hover:bg-white/30" : "bg-lab-ui/40 text-lab-text group-hover:bg-lab-ui")
           )}>
             <LayoutDashboard size={20} />
           </div>
           <span className={clsx(
             "text-lg font-semibold tracking-normal transition-colors",
-            FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-              ? "text-white group-hover:text-white/80"
-              : "text-lab-text group-hover:text-lab-ui"
+            isLG2
+              ? "text-slate-800"
+              : (isGlass ? "text-white group-hover:text-white/80" : "text-lab-text group-hover:text-lab-ui")
           )}>
             {theme.title}
           </span>
@@ -118,12 +119,12 @@ export default function Navbar() {
                     className={clsx(
                       "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm text-[10px] uppercase font-bold tracking-widest transition-all",
                       pathname.startsWith("/dashboard")
-                        ? FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                          ? "glass-button text-white shadow-md"
-                          : "bg-lab-ui text-lab-text shadow-md shadow-paper-shadow"
-                        : FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                          ? "bg-white/10 text-white hover:bg-white/20"
-                          : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30 shadow-paper-shadow"
+                        ? isLG2
+                          ? "lg2-liquid-teal text-white shadow-lg"
+                          : (isGlass ? "glass-button text-white shadow-md" : "bg-lab-ui text-lab-text shadow-md shadow-paper-shadow")
+                        : isLG2
+                          ? "lg2-glass-bubble text-slate-600 hover:text-slate-800"
+                          : (isGlass ? "bg-white/10 text-white hover:bg-white/20" : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30 shadow-paper-shadow")
                     )}
                   >
                     <LayoutDashboard size={14} />
@@ -136,12 +137,12 @@ export default function Navbar() {
                       className={clsx(
                         "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm text-[10px] uppercase font-bold tracking-widest transition-all",
                         pathname === "/kanban"
-                          ? FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                            ? "glass-button text-white shadow-md"
-                            : "bg-lab-ui text-lab-text shadow-md shadow-paper-shadow"
-                          : FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                            ? "bg-white/10 text-white hover:bg-white/20"
-                            : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30 shadow-paper-shadow"
+                          ? isLG2
+                            ? "lg2-liquid-teal text-white shadow-lg"
+                            : (isGlass ? "glass-button text-white shadow-md" : "bg-lab-ui text-lab-text shadow-md shadow-paper-shadow")
+                          : isLG2
+                            ? "lg2-glass-bubble text-slate-600 hover:text-slate-800"
+                            : (isGlass ? "bg-white/10 text-white hover:bg-white/20" : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30 shadow-paper-shadow")
                       )}
                     >
                       <Columns size={14} />
@@ -154,12 +155,12 @@ export default function Navbar() {
                     className={clsx(
                       "hidden sm:flex items-center space-x-2 px-5 py-2 rounded-full shadow-sm text-[10px] uppercase font-bold tracking-widest transition-all",
                       pathname === "/admin"
-                        ? FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                          ? "glass-button text-white shadow-md"
-                          : "bg-lab-ui text-lab-text shadow-md shadow-paper-shadow"
-                        : FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                          ? "bg-white/10 text-white hover:bg-white/20"
-                          : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30 shadow-paper-shadow"
+                        ? isLG2
+                          ? "lg2-liquid-purple text-white shadow-lg"
+                          : (isGlass ? "glass-button text-white shadow-md" : "bg-lab-ui text-lab-text shadow-md shadow-paper-shadow")
+                        : isLG2
+                          ? "lg2-glass-bubble text-slate-600 hover:text-slate-800"
+                          : (isGlass ? "bg-white/10 text-white hover:bg-white/20" : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/30 shadow-paper-shadow")
                     )}
                   >
                     <ShieldCheck size={14} />
@@ -170,23 +171,21 @@ export default function Navbar() {
 
               <div className={clsx(
                 "flex items-center space-x-3 pl-4 pr-1 py-1 rounded-full shadow-sm",
-                FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                  ? "bg-white/10 text-white"
-                  : "bg-lab-ui/20 shadow-paper-shadow"
+                isLG2
+                  ? "lg2-glass-bubble"
+                  : (isGlass ? "bg-white/10 text-white" : "bg-lab-ui/20 shadow-paper-shadow")
               )}>
                 <span className={clsx(
                   "hidden md:inline text-[10px] uppercase font-bold",
-                  FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                    ? "text-white/60"
-                    : "text-lab-text/60"
+                  isLG2 ? "text-slate-500" : (isGlass ? "text-white/60" : "text-lab-text/60")
                 )}>
                   USR: {session.user?.name?.split(' ')[0]}
                 </span>
                 <div className={clsx(
                   "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold",
-                  FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                    ? "bg-white/20 text-white"
-                    : "bg-lab-ui/40 text-lab-text"
+                  isLG2
+                    ? "bg-slate-200 text-slate-700"
+                    : (isGlass ? "bg-white/20 text-white" : "bg-lab-ui/40 text-lab-text")
                 )}>
                   {session.user?.name?.charAt(0).toUpperCase() || <User size={14} />}
                 </div>
@@ -194,9 +193,9 @@ export default function Navbar() {
                   onClick={() => signOut({ callbackUrl: "/" })}
                   className={clsx(
                     "p-1.5 transition-all",
-                    FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                      ? "text-white/30 hover:text-red-400"
-                      : "text-lab-text/30 hover:text-red-500"
+                    isLG2
+                      ? "text-slate-400 hover:text-red-500"
+                      : (isGlass ? "text-white/30 hover:text-red-400" : "text-lab-text/30 hover:text-red-500")
                   )}
                   title="Terminate Session"
                 >
@@ -209,9 +208,9 @@ export default function Navbar() {
               href="/login"
               className={clsx(
                 "text-xs font-black uppercase tracking-widest px-6 py-2 rounded-full shadow-sm transition-all active:scale-95",
-                FEATURE_FLAGS.ENABLE_LIQUID_GLASS
-                  ? "glass-button text-white"
-                  : "bg-lab-ui text-lab-bg shadow-paper-shadow hover:bg-lab-text"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800"
+                  : (isGlass ? "glass-button text-white" : "bg-lab-ui text-lab-bg shadow-paper-shadow hover:bg-lab-text")
               )}
             >
               Login

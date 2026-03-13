@@ -255,14 +255,15 @@ export default function AdminPage() {
   };
 
   const isGlass = FEATURE_FLAGS.ENABLE_LIQUID_GLASS;
+  const isLG2 = FEATURE_FLAGS.ENABLE_LIQUID_GLASS_V2;
 
   if (status === "loading") {
     return (
       <div className={clsx(
         "min-h-screen flex items-center justify-center",
-        isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]" : "bg-lab-bg"
+        isLG2 ? "bg-lg2-bg" : (isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23]" : "bg-lab-bg")
       )}>
-        <Loader2 className={clsx("animate-spin", isGlass ? "text-glass-secondary" : "text-lab-ui")} size={32} />
+        <Loader2 className={clsx("animate-spin", isLG2 ? "text-teal-500" : (isGlass ? "text-glass-secondary" : "text-lab-ui"))} size={32} />
       </div>
     );
   }
@@ -271,36 +272,42 @@ export default function AdminPage() {
 
   return (
     <div className={clsx(
-      "min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden",
-      isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] text-white" : "bg-lab-bg text-lab-text"
+      "min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden transition-colors duration-500",
+      isLG2 ? "bg-lg2-bg text-slate-800" : (isGlass ? "bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] text-white" : "bg-lab-bg text-lab-text")
     )}>
       {/* Background Layer */}
-      {isGlass ? (
-        <>
-          <div className="glass-bg-animated" />
-          <div className="glass-orbs">
-            <div className="glass-orb glass-orb-1" />
-            <div className="glass-orb glass-orb-2" />
-            <div className="glass-orb glass-orb-3" />
-          </div>
-        </>
+      {isLG2 ? (
+        <div className="fixed inset-0 pointer-events-none opacity-20">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,#A855F7_0%,transparent_25%),radial-gradient(circle_at_80%_80%,#2DD4BF_0%,transparent_25%)] blur-3xl" />
+        </div>
       ) : (
-        <div className="fixed inset-0 paper-texture z-0" />
+        isGlass ? (
+          <>
+            <div className="glass-bg-animated" />
+            <div className="glass-orbs">
+              <div className="glass-orb glass-orb-1" />
+              <div className="glass-orb glass-orb-2" />
+              <div className="glass-orb glass-orb-3" />
+            </div>
+          </>
+        ) : (
+          <div className="fixed inset-0 paper-texture z-0" />
+        )
       )}
 
       <div className="max-w-4xl mx-auto relative z-10">
         <header className="mb-12">
-          <h1 className={clsx("text-4xl font-bold tracking-tight", isGlass ? "text-white" : "text-lab-text")}>Admin Control Panel</h1>
+          <h1 className={clsx("text-4xl font-bold tracking-tight", isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text"))}>Admin Control Panel</h1>
         </header>
 
         {/* Main Theme Section */}
         <section className={clsx(
-          "mb-8 p-8 rounded-[2rem] border-none shadow-xl",
-          isGlass ? "glass-card" : "bg-white shadow-paper-shadow"
+          "mb-8 p-8 rounded-[2rem] border-none shadow-xl transition-all duration-500",
+          isLG2 ? "lg2-glass-board" : (isGlass ? "glass-card" : "bg-white shadow-paper-shadow")
         )}>
           <h2 className={clsx(
             "text-lg font-bold uppercase tracking-widest mb-6 ml-1",
-            isGlass ? "text-white/40" : "text-lab-text/40"
+            isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
           )}>Main Theme Config</h2>
           <div className="flex flex-col sm:flex-row gap-4">
             <input
@@ -310,9 +317,11 @@ export default function AdminPage() {
               onKeyDown={(e) => e.key === "Enter" && updateTheme()}
               className={clsx(
                 "flex-1 px-5 py-4 border-none rounded-2xl focus:outline-none transition-all",
-                isGlass
-                  ? "glass-input text-white placeholder:text-white/20"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : (isGlass
+                    ? "glass-input text-white placeholder:text-white/20"
+                    : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
               )}
               placeholder="e.g., Q1 Product Roadmap"
             />
@@ -320,9 +329,9 @@ export default function AdminPage() {
               onClick={updateTheme}
               className={clsx(
                 "px-8 py-4 rounded-full font-bold uppercase tracking-widest transition-all active:scale-[0.98]",
-                isGlass
-                  ? "glass-button text-white"
-                  : "bg-lab-text text-lab-bg hover:bg-lab-ui hover:text-lab-text shadow-lg shadow-paper-shadow"
+                isLG2
+                  ? "lg2-liquid-teal text-white shadow-xl"
+                  : (isGlass ? "glass-button text-white" : "bg-lab-text text-lab-bg hover:bg-lab-ui hover:text-lab-text shadow-lg shadow-paper-shadow")
               )}
             >
               Update System
@@ -332,12 +341,12 @@ export default function AdminPage() {
 
         {/* Sub-topics Section */}
         <section className={clsx(
-          "mb-8 p-8 rounded-[2rem] border-none shadow-xl",
-          isGlass ? "glass-card" : "bg-white shadow-paper-shadow"
+          "mb-8 p-8 rounded-[2rem] border-none shadow-xl transition-all duration-500",
+          isLG2 ? "lg2-glass-board" : (isGlass ? "glass-card" : "bg-white shadow-paper-shadow")
         )}>
           <h2 className={clsx(
             "text-lg font-bold uppercase tracking-widest mb-6 ml-1",
-            isGlass ? "text-white/40" : "text-lab-text/40"
+            isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
           )}>Sector Management</h2>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -348,9 +357,11 @@ export default function AdminPage() {
               onKeyDown={(e) => e.key === "Enter" && addSubTopic()}
               className={clsx(
                 "flex-1 px-5 py-4 border-none rounded-2xl focus:outline-none transition-all",
-                isGlass
-                  ? "glass-input text-white placeholder:text-white/20"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : (isGlass
+                    ? "glass-input text-white placeholder:text-white/20"
+                    : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
               )}
               placeholder="e.g., Marketing Sector"
             />
@@ -358,9 +369,9 @@ export default function AdminPage() {
               onClick={addSubTopic}
               className={clsx(
                 "px-8 py-4 rounded-full font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-[0.98]",
-                isGlass
-                  ? "glass-button-secondary text-white"
-                  : "bg-lab-ui text-lab-text hover:bg-lab-ui/80 shadow-lg shadow-paper-shadow"
+                isLG2
+                  ? "lg2-liquid-teal text-white shadow-xl"
+                  : (isGlass ? "glass-button-secondary text-white" : "bg-lab-ui text-lab-text hover:bg-lab-ui/80 shadow-lg shadow-paper-shadow")
               )}
             >
               <Plus size={20} />
@@ -370,26 +381,28 @@ export default function AdminPage() {
 
           <div className={clsx(
             "overflow-hidden rounded-2xl border",
-            isGlass ? "border-white/10 bg-white/5" : "border-lab-ui/10 bg-lab-ui/5"
+            isLG2
+              ? "border-slate-100 bg-white/40"
+              : (isGlass ? "border-white/10 bg-white/5" : "border-lab-ui/10 bg-lab-ui/5")
           )}>
             <table className="w-full border-collapse">
               <thead>
-                <tr className={isGlass ? "bg-white/10" : "bg-lab-ui/10"}>
-                  <th className={clsx("text-left py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isGlass ? "text-white/40" : "text-lab-text/40")}>Title</th>
-                  <th className={clsx("text-center py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isGlass ? "text-white/40" : "text-lab-text/40")}>Density</th>
-                  <th className={clsx("text-right py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isGlass ? "text-white/40" : "text-lab-text/40")}>Actions</th>
+                <tr className={isLG2 ? "bg-slate-50/50" : (isGlass ? "bg-white/10" : "bg-lab-ui/10")}>
+                  <th className={clsx("text-left py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40"))}>Title</th>
+                  <th className={clsx("text-center py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40"))}>Density</th>
+                  <th className={clsx("text-right py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40"))}>Actions</th>
                 </tr>
               </thead>
-              <tbody className={isGlass ? "divide-y divide-white/10" : "divide-y divide-lab-ui/10"}>
+              <tbody className={clsx("divide-y", isLG2 ? "divide-slate-50" : (isGlass ? "divide-white/10" : "divide-lab-ui/10"))}>
                 {subTopics.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className={clsx("py-10 text-center italic", isGlass ? "text-white/30" : "text-lab-text/30")}>
+                    <td colSpan={3} className={clsx("py-10 text-center italic", isLG2 ? "text-slate-300" : (isGlass ? "text-white/30" : "text-lab-text/30"))}>
                       No active sectors detected.
                     </td>
                   </tr>
                 ) : (
                   subTopics.map((st) => (
-                    <tr key={st.id} className="hover:bg-lab-ui/5 transition-colors">
+                    <tr key={st.id} className={clsx("transition-colors", isLG2 ? "hover:bg-white/40" : "hover:bg-lab-ui/5")}>
                       <td className="py-4 px-6">
                         {editingSubTopic?.id === st.id ? (
                           <input
@@ -397,27 +410,33 @@ export default function AdminPage() {
                             value={editingSubTopic.title}
                             onChange={(e) => setEditingSubTopic({ ...editingSubTopic, title: e.target.value })}
                             onKeyDown={(e) => e.key === "Enter" && saveEdit()}
-                            className="w-full px-3 py-1 bg-lab-bg/50 border border-lab-ui rounded-lg text-lab-text focus:outline-none"
+                            className={clsx(
+                              "w-full px-3 py-1 rounded-lg focus:outline-none",
+                              isLG2 ? "bg-white border border-slate-200 text-slate-800" : "bg-lab-bg/50 border border-lab-ui text-lab-text"
+                            )}
                             autoFocus
                           />
                         ) : (
-                          <span className="font-bold text-lab-text">{st.title}</span>
+                          <span className={clsx("font-bold", isLG2 ? "text-slate-700" : "text-lab-text")}>{st.title}</span>
                         )}
                       </td>
                       <td className="py-4 px-6 text-center">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold bg-lab-ui/20 text-lab-text">
+                        <span className={clsx(
+                          "inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold",
+                          isLG2 ? "bg-slate-100 text-slate-500" : "bg-lab-ui/20 text-lab-text"
+                        )}>
                           {st.cardCount} UNITS
                         </span>
                       </td>
                       <td className="py-4 px-6 text-right space-x-4">
                         {editingSubTopic?.id === st.id ? (
-                          <button onClick={saveEdit} className="text-lab-ui font-bold hover:text-lab-text uppercase text-[10px] tracking-widest transition-colors">Save</button>
+                          <button onClick={saveEdit} className={clsx("font-bold uppercase text-[10px] tracking-widest transition-colors", isLG2 ? "text-teal-600 hover:text-teal-800" : "text-lab-ui hover:text-lab-text")}>Save</button>
                         ) : (
-                          <button onClick={() => startEdit(st)} className="text-lab-text/40 hover:text-lab-ui transition-colors">
+                          <button onClick={() => startEdit(st)} className={clsx("transition-colors", isLG2 ? "text-slate-300 hover:text-slate-600" : "text-lab-text/40 hover:text-lab-ui")}>
                             <Edit2 size={16} />
                           </button>
                         )}
-                        <button onClick={() => deleteSubTopic(st.id)} className="text-lab-text/40 hover:text-red-500 transition-colors">
+                        <button onClick={() => deleteSubTopic(st.id)} className={clsx("transition-colors", isLG2 ? "text-slate-300 hover:text-red-500" : "text-lab-text/40 hover:text-red-500")}>
                           <Trash2 size={16} />
                         </button>
                       </td>
@@ -430,8 +449,14 @@ export default function AdminPage() {
         </section>
 
         {/* Departments Section */}
-        <section className="mb-8 p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Department Registry</h2>
+        <section className={clsx(
+          "mb-8 p-8 rounded-[2rem] border-none shadow-xl transition-all duration-500",
+          isLG2 ? "lg2-glass-board" : "bg-white shadow-paper-shadow"
+        )}>
+          <h2 className={clsx(
+            "text-lg font-bold uppercase tracking-widest mb-6 ml-1",
+            isLG2 ? "text-slate-400" : "text-lab-text/40"
+          )}>Department Registry</h2>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
@@ -439,36 +464,51 @@ export default function AdminPage() {
               value={newDepartment}
               onChange={(e) => setNewDepartment(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addDepartment()}
-              className="flex-1 px-5 py-4 bg-lab-ui/10 border-none rounded-2xl text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20"
+              className={clsx(
+                "flex-1 px-5 py-4 border-none rounded-2xl focus:outline-none transition-all",
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+              )}
               placeholder="e.g., Engineering"
             />
             <button
               onClick={addDepartment}
-              className="bg-lab-ui text-lab-text px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui/80 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
+              className={clsx(
+                "px-8 py-4 rounded-full font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-[0.98]",
+                isLG2
+                  ? "lg2-liquid-teal text-white shadow-xl"
+                  : "bg-lab-ui text-lab-text hover:bg-lab-ui/80 shadow-lg shadow-paper-shadow"
+              )}
             >
               <Plus size={20} />
               <span>Add Department</span>
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-lab-ui/10 bg-lab-ui/5">
+          <div className={clsx(
+            "overflow-hidden rounded-2xl border",
+            isLG2
+              ? "border-slate-100 bg-white/40"
+              : "border-lab-ui/10 bg-lab-ui/5"
+          )}>
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-lab-ui/10">
-                  <th className="text-left py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Name</th>
-                  <th className="text-right py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Actions</th>
+                <tr className={isLG2 ? "bg-slate-50/50" : "bg-lab-ui/10"}>
+                  <th className={clsx("text-left py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isLG2 ? "text-slate-400" : "text-lab-text/40")}>Name</th>
+                  <th className={clsx("text-right py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isLG2 ? "text-slate-400" : "text-lab-text/40")}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-lab-ui/10">
+              <tbody className={clsx("divide-y", isLG2 ? "divide-slate-50" : "divide-lab-ui/10")}>
                 {departments.length === 0 ? (
                   <tr>
-                    <td colSpan={2} className="py-10 text-center text-lab-text/30 italic">
+                    <td colSpan={2} className={clsx("py-10 text-center italic", isLG2 ? "text-slate-300" : "text-lab-text/30")}>
                       No departments registered.
                     </td>
                   </tr>
                 ) : (
                   departments.map((d) => (
-                    <tr key={d.id} className="hover:bg-lab-ui/5 transition-colors">
+                    <tr key={d.id} className={clsx("transition-colors", isLG2 ? "hover:bg-white/40" : "hover:bg-lab-ui/5")}>
                       <td className="py-4 px-6">
                         {editingDepartment?.id === d.id ? (
                           <input
@@ -476,22 +516,25 @@ export default function AdminPage() {
                             value={editingDepartment.name}
                             onChange={(e) => setEditingDepartment({ ...editingDepartment, name: e.target.value })}
                             onKeyDown={(e) => e.key === "Enter" && saveDepartmentEdit()}
-                            className="w-full px-3 py-1 bg-lab-bg/50 border border-lab-ui rounded-lg text-lab-text focus:outline-none"
+                            className={clsx(
+                              "w-full px-3 py-1 rounded-lg focus:outline-none",
+                              isLG2 ? "bg-white border border-slate-200 text-slate-800" : "bg-lab-bg/50 border border-lab-ui text-lab-text"
+                            )}
                             autoFocus
                           />
                         ) : (
-                          <span className="font-bold text-lab-text">{d.name}</span>
+                          <span className={clsx("font-bold", isLG2 ? "text-slate-700" : "text-lab-text")}>{d.name}</span>
                         )}
                       </td>
                       <td className="py-4 px-6 text-right space-x-4">
                         {editingDepartment?.id === d.id ? (
-                          <button onClick={saveDepartmentEdit} className="text-lab-ui font-bold hover:text-lab-text uppercase text-[10px] tracking-widest transition-colors">Save</button>
+                          <button onClick={saveDepartmentEdit} className={clsx("font-bold uppercase text-[10px] tracking-widest transition-colors", isLG2 ? "text-teal-600 hover:text-teal-800" : "text-lab-ui hover:text-lab-text")}>Save</button>
                         ) : (
-                          <button onClick={() => setEditingDepartment(d)} className="text-lab-text/40 hover:text-lab-ui transition-colors">
+                          <button onClick={() => setEditingDepartment(d)} className={clsx("transition-colors", isLG2 ? "text-slate-300 hover:text-slate-600" : "text-lab-text/40 hover:text-lab-ui")}>
                             <Edit2 size={16} />
                           </button>
                         )}
-                        <button onClick={() => deleteDepartment(d.id)} className="text-lab-text/40 hover:text-red-500 transition-colors">
+                        <button onClick={() => deleteDepartment(d.id)} className={clsx("transition-colors", isLG2 ? "text-slate-300 hover:text-red-500" : "text-lab-text/40 hover:text-red-500")}>
                           <Trash2 size={16} />
                         </button>
                       </td>
@@ -504,8 +547,14 @@ export default function AdminPage() {
         </section>
 
         {/* Countries Section */}
-        <section className="mb-8 p-8 bg-white rounded-[2rem] border-none shadow-xl shadow-paper-shadow">
-          <h2 className="text-lg font-bold text-lab-text/40 uppercase tracking-widest mb-6 ml-1">Country Registry</h2>
+        <section className={clsx(
+          "mb-8 p-8 rounded-[2rem] border-none shadow-xl transition-all duration-500",
+          isLG2 ? "lg2-glass-board" : "bg-white shadow-paper-shadow"
+        )}>
+          <h2 className={clsx(
+            "text-lg font-bold uppercase tracking-widest mb-6 ml-1",
+            isLG2 ? "text-slate-400" : "text-lab-text/40"
+          )}>Country Registry</h2>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
@@ -513,36 +562,51 @@ export default function AdminPage() {
               value={newCountry}
               onChange={(e) => setNewCountry(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addCountry()}
-              className="flex-1 px-5 py-4 bg-lab-ui/10 border-none rounded-2xl text-lab-text focus:outline-none focus:ring-2 focus:ring-lab-ui/40 transition-all placeholder:text-lab-text/20"
+              className={clsx(
+                "flex-1 px-5 py-4 border-none rounded-2xl focus:outline-none transition-all",
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+              )}
               placeholder="e.g., Switzerland"
             />
             <button
               onClick={addCountry}
-              className="bg-lab-ui text-lab-text px-8 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-lab-ui/80 flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-paper-shadow"
+              className={clsx(
+                "px-8 py-4 rounded-full font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-[0.98]",
+                isLG2
+                  ? "lg2-liquid-teal text-white shadow-xl"
+                  : "bg-lab-ui text-lab-text hover:bg-lab-ui/80 shadow-lg shadow-paper-shadow"
+              )}
             >
               <Plus size={20} />
               <span>Add Country</span>
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-lab-ui/10 bg-lab-ui/5">
+          <div className={clsx(
+            "overflow-hidden rounded-2xl border",
+            isLG2
+              ? "border-slate-100 bg-white/40"
+              : "border-lab-ui/10 bg-lab-ui/5"
+          )}>
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-lab-ui/10">
-                  <th className="text-left py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Name</th>
-                  <th className="text-right py-4 px-6 text-[10px] font-bold text-lab-text/40 uppercase tracking-[0.2em]">Actions</th>
+                <tr className={isLG2 ? "bg-slate-50/50" : "bg-lab-ui/10"}>
+                  <th className={clsx("text-left py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isLG2 ? "text-slate-400" : "text-lab-text/40")}>Name</th>
+                  <th className={clsx("text-right py-4 px-6 text-[10px] font-bold uppercase tracking-[0.2em]", isLG2 ? "text-slate-400" : "text-lab-text/40")}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-lab-ui/10">
+              <tbody className={clsx("divide-y", isLG2 ? "divide-slate-50" : "divide-lab-ui/10")}>
                 {countries.length === 0 ? (
                   <tr>
-                    <td colSpan={2} className="py-10 text-center text-lab-text/30 italic">
+                    <td colSpan={2} className={clsx("py-10 text-center italic", isLG2 ? "text-slate-300" : "text-lab-text/30")}>
                       No countries registered.
                     </td>
                   </tr>
                 ) : (
                   countries.map((c) => (
-                    <tr key={c.id} className="hover:bg-lab-ui/5 transition-colors">
+                    <tr key={c.id} className={clsx("transition-colors", isLG2 ? "hover:bg-white/40" : "hover:bg-lab-ui/5")}>
                       <td className="py-4 px-6">
                         {editingCountry?.id === c.id ? (
                           <input
@@ -550,22 +614,25 @@ export default function AdminPage() {
                             value={editingCountry.name}
                             onChange={(e) => setEditingCountry({ ...editingCountry, name: e.target.value })}
                             onKeyDown={(e) => e.key === "Enter" && saveCountryEdit()}
-                            className="w-full px-3 py-1 bg-lab-bg/50 border border-lab-ui rounded-lg text-lab-text focus:outline-none"
+                            className={clsx(
+                              "w-full px-3 py-1 rounded-lg focus:outline-none",
+                              isLG2 ? "bg-white border border-slate-200 text-slate-800" : "bg-lab-bg/50 border border-lab-ui text-lab-text"
+                            )}
                             autoFocus
                           />
                         ) : (
-                          <span className="font-bold text-lab-text">{c.name}</span>
+                          <span className={clsx("font-bold", isLG2 ? "text-slate-700" : "text-lab-text")}>{c.name}</span>
                         )}
                       </td>
                       <td className="py-4 px-6 text-right space-x-4">
                         {editingCountry?.id === c.id ? (
-                          <button onClick={saveCountryEdit} className="text-lab-ui font-bold hover:text-lab-text uppercase text-[10px] tracking-widest transition-colors">Save</button>
+                          <button onClick={saveCountryEdit} className={clsx("font-bold uppercase text-[10px] tracking-widest transition-colors", isLG2 ? "text-teal-600 hover:text-teal-800" : "text-lab-ui hover:text-lab-text")}>Save</button>
                         ) : (
-                          <button onClick={() => setEditingCountry(c)} className="text-lab-text/40 hover:text-lab-ui transition-colors">
+                          <button onClick={() => setEditingCountry(c)} className={clsx("transition-colors", isLG2 ? "text-slate-300 hover:text-slate-600" : "text-lab-text/40 hover:text-lab-ui")}>
                             <Edit2 size={16} />
                           </button>
                         )}
-                        <button onClick={() => deleteCountry(c.id)} className="text-lab-text/40 hover:text-red-500 transition-colors">
+                        <button onClick={() => deleteCountry(c.id)} className={clsx("transition-colors", isLG2 ? "text-slate-300 hover:text-red-500" : "text-lab-text/40 hover:text-red-500")}>
                           <Trash2 size={16} />
                         </button>
                       </td>
@@ -584,6 +651,7 @@ export default function AdminPage() {
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
+          isLG2={isLG2}
         />
       )}
     </div>

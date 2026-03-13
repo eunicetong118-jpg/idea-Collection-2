@@ -45,6 +45,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
   const isGlass = FEATURE_FLAGS.ENABLE_LIQUID_GLASS;
+  const isLG2 = FEATURE_FLAGS.ENABLE_LIQUID_GLASS_V2;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -162,19 +163,19 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
       <div className="mb-12 space-y-4">
         <h2 className={clsx(
           "text-3xl md:text-4xl font-bold leading-tight",
-          isGlass ? "text-white glass-reveal" : "text-lab-text ink-reveal"
+          isLG2 ? "text-slate-800 lg2-reveal" : (isGlass ? "text-white glass-reveal" : "text-lab-text ink-reveal")
         )}>
           How can we improve our products to increase sales?
         </h2>
         <p className={clsx(
           "text-lg italic serif",
-          isGlass ? "text-white/40 glass-reveal delay-100" : "text-lab-text/40 ink-reveal delay-100"
+          isLG2 ? "text-slate-400 lg2-reveal delay-100" : (isGlass ? "text-white/40 glass-reveal delay-100" : "text-lab-text/40 ink-reveal delay-100")
         )}>
           Idea Submission Form
         </p>
         <div className={clsx(
           "h-px w-24",
-          isGlass ? "bg-white/20 glass-reveal delay-200" : "bg-lab-ui/20 ink-reveal delay-200"
+          isLG2 ? "bg-slate-200 lg2-reveal delay-200" : (isGlass ? "bg-white/20 glass-reveal delay-200" : "bg-lab-ui/20 ink-reveal delay-200")
         )} />
       </div>
 
@@ -185,7 +186,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
         }}
         className={clsx(
           "space-y-8",
-          isGlass ? "glass-reveal" : "ink-reveal"
+          isLG2 ? "lg2-reveal" : (isGlass ? "glass-reveal" : "ink-reveal")
         )}
       >
         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500/60 mb-8">* ALL_FIELDS_REQUIRED_UNLESS_NOTED</p>
@@ -194,7 +195,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
         <div className="space-y-2">
           <label className={clsx(
             "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-            isGlass ? "text-white" : ""
+            isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
           )} htmlFor="title">
             Title
           </label>
@@ -203,9 +204,11 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
             type="text"
             className={clsx(
               "w-full rounded-2xl p-4 focus:outline-none transition-all font-bold",
-              isGlass
-                ? "glass-input text-white placeholder:text-white/20"
-                : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+              isLG2
+                ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                : (isGlass
+                  ? "glass-input text-white placeholder:text-white/20"
+                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
             )}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -220,7 +223,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <div className="space-y-2">
             <label className={clsx(
               "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-              isGlass ? "text-white" : ""
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
             )} htmlFor="problem">
               What problem are you trying to solve?
             </label>
@@ -228,9 +231,11 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               id="problem"
               className={clsx(
                 "w-full rounded-2xl p-4 focus:outline-none transition-all h-32 resize-none",
-                isGlass
-                  ? "glass-input text-white placeholder:text-white/20"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : (isGlass
+                    ? "glass-input text-white placeholder:text-white/20"
+                    : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
               )}
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
@@ -242,7 +247,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <div className="space-y-2">
             <label className={clsx(
               "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-              isGlass ? "text-white" : ""
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
             )} htmlFor="solution">
               Please explain the solution you are proposing
             </label>
@@ -250,9 +255,11 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               id="solution"
               className={clsx(
                 "w-full rounded-2xl p-4 focus:outline-none transition-all h-32 resize-none",
-                isGlass
-                  ? "glass-input text-white placeholder:text-white/20"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : (isGlass
+                    ? "glass-input text-white placeholder:text-white/20"
+                    : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
               )}
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
@@ -268,7 +275,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <div className="space-y-2">
             <label className={clsx(
               "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-              isGlass ? "text-white" : ""
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
             )} htmlFor="relatedProduct">
               Related Product
             </label>
@@ -276,9 +283,11 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               id="relatedProduct"
               className={clsx(
                 "w-full rounded-2xl p-4 focus:outline-none transition-all h-32 resize-none",
-                isGlass
-                  ? "glass-input text-white placeholder:text-white/20"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : (isGlass
+                    ? "glass-input text-white placeholder:text-white/20"
+                    : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
               )}
               value={relatedProduct}
               onChange={(e) => setRelatedProduct(e.target.value)}
@@ -290,7 +299,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <div className="space-y-2">
             <label className={clsx(
               "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-              isGlass ? "text-white" : ""
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
             )} htmlFor="additionalBusiness">
               Additional Business
             </label>
@@ -298,9 +307,11 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               id="additionalBusiness"
               className={clsx(
                 "w-full rounded-2xl p-4 focus:outline-none transition-all h-32 resize-none",
-                isGlass
-                  ? "glass-input text-white placeholder:text-white/20"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : (isGlass
+                    ? "glass-input text-white placeholder:text-white/20"
+                    : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
               )}
               value={additionalBusiness}
               onChange={(e) => setAdditionalBusiness(e.target.value)}
@@ -316,7 +327,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <div className="space-y-2">
             <label className={clsx(
               "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-              isGlass ? "text-white" : ""
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
             )} htmlFor="involvement">
               Development Involvement
             </label>
@@ -324,9 +335,11 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               id="involvement"
               className={clsx(
                 "w-full rounded-2xl p-4 focus:outline-none transition-all h-32 resize-none",
-                isGlass
-                  ? "glass-input text-white placeholder:text-white/20"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : (isGlass
+                    ? "glass-input text-white placeholder:text-white/20"
+                    : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
               )}
               value={involvement}
               onChange={(e) => setInvolvement(e.target.value)}
@@ -338,7 +351,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <div className="space-y-2">
             <label className={clsx(
               "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-              isGlass ? "text-white" : ""
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
             )} htmlFor="revenue">
               Potential Revenue
             </label>
@@ -347,9 +360,11 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               type="text"
               className={clsx(
                 "w-full rounded-2xl p-4 focus:outline-none transition-all font-bold",
-                isGlass
-                  ? "glass-input text-white placeholder:text-white/20"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800 placeholder:text-slate-300"
+                  : (isGlass
+                    ? "glass-input text-white placeholder:text-white/20"
+                    : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40 placeholder:text-lab-text/20")
               )}
               value={revenue}
               onChange={(e) => setRevenue(e.target.value)}
@@ -365,7 +380,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           <div className="space-y-2">
             <label className={clsx(
               "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-              isGlass ? "text-white" : ""
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
             )} htmlFor="department">
               Department
             </label>
@@ -373,25 +388,25 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               id="department"
               className={clsx(
                 "w-full rounded-2xl p-4 focus:outline-none transition-all font-bold appearance-none cursor-pointer",
-                isGlass
-                  ? "glass-input text-white"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800"
+                  : (isGlass ? "glass-input text-white" : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40")
               )}
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
               required
               disabled={loading || fetchingData}
             >
-              <option value="" disabled>SELECT_DEPT...</option>
+              <option value="" disabled className={isLG2 ? "text-slate-800" : ""}>SELECT_DEPT...</option>
               {departments.map((d) => (
-                <option key={d.id} value={d.name}>{d.name}</option>
+                <option key={d.id} value={d.name} className={isLG2 ? "text-slate-800" : ""}>{d.name}</option>
               ))}
             </select>
           </div>
           <div className="space-y-2">
             <label className={clsx(
               "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-              isGlass ? "text-white" : ""
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
             )} htmlFor="country">
               Country
             </label>
@@ -399,18 +414,18 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
               id="country"
               className={clsx(
                 "w-full rounded-2xl p-4 focus:outline-none transition-all font-bold appearance-none cursor-pointer",
-                isGlass
-                  ? "glass-input text-white"
-                  : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40"
+                isLG2
+                  ? "lg2-glass-bubble text-slate-800"
+                  : (isGlass ? "glass-input text-white" : "bg-lab-ui/10 text-lab-text focus:ring-2 focus:ring-lab-ui/40")
               )}
               value={country}
               onChange={(e) => setCountry(e.target.value)}
               required
               disabled={loading || fetchingData}
             >
-              <option value="" disabled>SELECT_COUNTRY...</option>
+              <option value="" disabled className={isLG2 ? "text-slate-800" : ""}>SELECT_COUNTRY...</option>
               {countries.map((c) => (
-                <option key={c.id} value={c.name}>{c.name}</option>
+                <option key={c.id} value={c.name} className={isLG2 ? "text-slate-800" : ""}>{c.name}</option>
               ))}
             </select>
           </div>
@@ -420,7 +435,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
         <div className="space-y-2">
           <label className={clsx(
             "text-[10px] uppercase tracking-[0.4em] opacity-40 block font-bold",
-            isGlass ? "text-white" : ""
+            isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "")
           )}>
             Supporting Image (Max 2MB)
           </label>
@@ -440,32 +455,34 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
                 disabled={loading}
                 className={clsx(
                   "w-full border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center gap-3 transition-all group",
-                  isGlass
-                    ? "border-white/30 rounded-2xl hover:bg-white/5 hover:border-white/50"
-                    : "border-lab-ui/30 rounded-2xl hover:bg-lab-ui/5 hover:border-lab-ui/50"
+                  isLG2
+                    ? "border-slate-200 hover:bg-slate-50"
+                    : (isGlass ? "border-white/30 rounded-2xl hover:bg-white/5 hover:border-white/50" : "border-lab-ui/30 rounded-2xl hover:bg-lab-ui/5 hover:border-lab-ui/50")
                 )}
               >
-                <Upload size={32} className={isGlass ? "text-white/40 group-hover:text-white transition-colors" : "text-lab-ui/40 group-hover:text-lab-ui transition-colors"} />
+                <Upload size={32} className={isLG2 ? "text-slate-300 group-hover:text-teal-500 transition-colors" : (isGlass ? "text-white/40 group-hover:text-white transition-colors" : "text-lab-ui/40 group-hover:text-lab-ui transition-colors")} />
                 <span className={clsx(
                   "text-[10px] font-black uppercase tracking-[0.2em]",
-                  isGlass ? "text-white/40" : "text-lab-text/40"
+                  isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                 )}>ATTACH_VISUAL_ASSET</span>
               </button>
             ) : (
               <div className={clsx(
                 "relative rounded-2xl overflow-hidden p-4 flex items-center justify-between",
-                isGlass ? "border border-white/20 bg-white/5" : "border border-lab-ui/20 bg-lab-ui/5"
+                isLG2
+                  ? "lg2-glass-bubble border-slate-100"
+                  : (isGlass ? "border border-white/20 bg-white/5" : "border border-lab-ui/20 bg-lab-ui/5")
               )}>
                 <div className="flex items-center gap-4">
                   <div className={clsx(
                     "w-12 h-12 rounded-lg overflow-hidden border",
-                    isGlass ? "border-white/20" : "border-lab-ui/20"
+                    isLG2 ? "border-slate-100" : (isGlass ? "border-white/20" : "border-lab-ui/20")
                   )}>
                     <img src={fileBase64} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                   <span className={clsx(
                     "text-sm font-bold truncate max-w-[200px]",
-                    isGlass ? "text-white" : "text-lab-text"
+                    isLG2 ? "text-slate-700" : (isGlass ? "text-white" : "text-lab-text")
                   )}>{fileName}</span>
                 </div>
                 <button
@@ -484,13 +501,13 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           type="submit"
           className={clsx(
             "rounded-full font-bold py-5 px-8 w-full transition-all duration-300 relative overflow-hidden group/btn",
-            isGlass
-              ? "glass-button text-white"
-              : "bg-lab-text text-lab-bg hover:bg-lab-ui hover:text-lab-text shadow-xl shadow-paper-shadow"
+            isLG2
+              ? "lg2-liquid-teal text-white shadow-xl"
+              : (isGlass ? "glass-button text-white" : "bg-lab-text text-lab-bg hover:bg-lab-ui hover:text-lab-text shadow-xl shadow-paper-shadow")
           )}
           disabled={loading}
         >
-          {!isGlass && (
+          {!(isGlass || isLG2) && (
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
           )}
           <span className="relative z-10 flex items-center justify-center gap-2">
@@ -512,6 +529,7 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
+          isLG2={isLG2}
         />
       )}
 
@@ -519,38 +537,38 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
       {showSimilarityModal && (
         <div className={clsx(
           "fixed inset-0 flex items-center justify-center p-4 z-50",
-          isGlass ? "bg-black/40 backdrop-blur-sm" : "bg-lab-text/40 backdrop-blur-sm"
+          isLG2 ? "bg-slate-900/10 backdrop-blur-md" : (isGlass ? "bg-black/40 backdrop-blur-sm" : "bg-lab-text/40 backdrop-blur-sm")
         )}>
           <div className={clsx(
             "p-10 max-w-xl w-full shadow-2xl border-none animate-in zoom-in-95 duration-200",
-            isGlass ? "glass-card" : "bg-white rounded-[2rem] shadow-paper-shadow"
+            isLG2 ? "lg2-glass-board" : (isGlass ? "glass-card" : "bg-white rounded-[2rem] shadow-paper-shadow")
           )}>
             <h3 className={clsx(
               "text-2xl font-bold mb-4",
-              isGlass ? "text-white" : "text-lab-text"
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text")
             )}>Similar Idea Found</h3>
             <p className={clsx(
               "mb-6 leading-relaxed",
-              isGlass ? "text-white/60" : "text-lab-text/60"
+              isLG2 ? "text-slate-500" : (isGlass ? "text-white/60" : "text-lab-text/60")
             )}>
               We found an existing idea that seems very similar to yours. Would you like to proceed or refine your idea?
             </p>
             <div className={clsx(
               "rounded-2xl p-6 mb-8 border",
-              isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10"
+              isLG2 ? "lg2-glass-bubble border-slate-100/50" : (isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10")
             )}>
               <h4 className={clsx(
                 "font-bold mb-2 text-lg",
-                isGlass ? "text-white" : "text-lab-text"
+                isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text")
               )}>{similarIdea?.title}</h4>
               <p className={clsx(
                 "text-sm leading-relaxed line-clamp-4",
-                isGlass ? "text-white/50" : "text-lab-text/50"
+                isLG2 ? "text-slate-500" : (isGlass ? "text-white/50" : "text-lab-text/50")
               )}>{similarIdea?.description}</p>
             </div>
             <p className={clsx(
               "mb-8 font-medium",
-              isGlass ? "text-white" : "text-lab-text"
+              isLG2 ? "text-slate-700" : (isGlass ? "text-white" : "text-lab-text")
             )}>
               Are you sure you still want to proceed?
             </p>
@@ -559,9 +577,9 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
                 onClick={() => handleSubmit(true)}
                 className={clsx(
                   "flex-1 font-bold py-4 px-6 rounded-full transition-all duration-300",
-                  isGlass
-                    ? "glass-button text-white"
-                    : "bg-lab-text text-lab-bg hover:bg-lab-ui"
+                  isLG2
+                    ? "lg2-liquid-teal text-white shadow-lg"
+                    : (isGlass ? "glass-button text-white" : "bg-lab-text text-lab-bg hover:bg-lab-ui")
                 )}
                 disabled={loading}
               >
@@ -571,9 +589,9 @@ export default function IdeaForm({ subTopicId, onSuccess }: IdeaFormProps) {
                 onClick={() => setShowSimilarityModal(false)}
                 className={clsx(
                   "flex-1 font-bold py-4 px-6 rounded-full transition-all duration-300",
-                  isGlass
-                    ? "bg-white/10 text-white hover:bg-white/20"
-                    : "bg-lab-ui/10 text-lab-text hover:bg-lab-ui/20"
+                  isLG2
+                    ? "lg2-glass-bubble text-slate-600 hover:text-slate-800"
+                    : (isGlass ? "bg-white/10 text-white hover:bg-white/20" : "bg-lab-ui/10 text-lab-text hover:bg-lab-ui/20")
                 )}
                 disabled={loading}
               >

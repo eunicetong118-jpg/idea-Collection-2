@@ -170,29 +170,32 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
   };
 
   const isGlass = FEATURE_FLAGS.ENABLE_LIQUID_GLASS;
+  const isLG2 = FEATURE_FLAGS.ENABLE_LIQUID_GLASS_V2;
 
   return (
     <div className="relative group">
       {/* Decorative Layers */}
-      {isGlass ? (
-        <>
-          <div className="absolute inset-0 bg-white/5 rounded-[2rem] translate-x-2 translate-y-2 -z-10 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-500" />
-          <div className="absolute inset-0 bg-white/10 rounded-[2rem] translate-x-1 translate-y-1 -z-10 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-white/20 rounded-[2rem] translate-x-2 translate-y-2 -z-10 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-500" />
-          <div className="absolute inset-0 bg-white/40 rounded-[2rem] translate-x-1 translate-y-1 -z-10 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500" />
-        </>
+      {!isLG2 && (
+        isGlass ? (
+          <>
+            <div className="absolute inset-0 bg-white/5 rounded-[2rem] translate-x-2 translate-y-2 -z-10 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-500" />
+            <div className="absolute inset-0 bg-white/10 rounded-[2rem] translate-x-1 translate-y-1 -z-10 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-white/20 rounded-[2rem] translate-x-2 translate-y-2 -z-10 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-500" />
+            <div className="absolute inset-0 bg-white/40 rounded-[2rem] translate-x-1 translate-y-1 -z-10 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500" />
+          </>
+        )
       )}
 
       <div
         data-testid="idea-card-container"
         className={clsx(
-          "rounded-[2rem] p-10 shadow-2xl border-none hover:translate-y-[-6px] transition-all duration-500 relative",
-          isGlass
-            ? "glass-card"
-            : "bg-white/90 shadow-paper-shadow",
+          "rounded-[2rem] p-10 shadow-2xl border-none transition-all duration-500 relative",
+          isLG2
+            ? "lg2-glass-bubble"
+            : (isGlass ? "glass-card hover:translate-y-[-6px]" : "bg-white/90 shadow-paper-shadow hover:translate-y-[-6px]"),
           isDone && "opacity-60 grayscale-[0.3]"
         )}
       >
@@ -201,14 +204,14 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
           <div className="absolute inset-0 z-[100] animate-in fade-in zoom-in-95 duration-300 p-6 pointer-events-none">
             <div className={clsx(
               "w-full h-full p-8 rounded-[1.5rem] shadow-2xl relative border flex flex-col justify-center overflow-y-auto",
-              isGlass
-                ? "bg-glass-text/95 text-white border-white/10 backdrop-blur-xl"
-                : "bg-lab-text/95 text-lab-bg border-white/10"
+              isLG2
+                ? "lg2-glass-board border-white/20 text-slate-800"
+                : (isGlass ? "bg-glass-text/95 text-white border-white/10 backdrop-blur-xl" : "bg-lab-text/95 text-lab-bg border-white/10")
             )}>
               <div className="flex items-center gap-3 mb-4 opacity-60">
                 <div className={clsx(
                   "w-2 h-2 rounded-full animate-pulse",
-                  isGlass ? "bg-glass-secondary" : "bg-lab-ui"
+                  isLG2 ? "bg-teal-500" : (isGlass ? "bg-glass-secondary" : "bg-lab-ui")
                 )} />
                 <span className="text-[10px] font-black uppercase tracking-[0.3em]">AI_SYNTHESIS_SUMMARY</span>
               </div>
@@ -241,7 +244,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             )} />
             <span className={clsx(
               "text-[10px] font-black uppercase tracking-[0.3em] opacity-40",
-              isGlass ? "text-white" : "text-lab-text"
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text")
             )}>
               {stage} // {stageStatus}
             </span>
@@ -258,65 +261,73 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
               onMouseEnter={() => setShowStatusControls(true)}
               onMouseLeave={() => setShowStatusControls(false)}
             >
-              <div className={clsx(
-                "p-3 rounded-2xl shadow-xl flex flex-col gap-3 animate-in fade-in slide-in-from-right-4",
-                isGlass
-                  ? "glass-card"
-                  : "bg-white/95 backdrop-blur-md border border-lab-ui/20"
-              )}>
-                <div className="flex flex-col gap-1">
-                  <span className={clsx(
-                    "text-[8px] font-black uppercase tracking-widest ml-1",
-                    isGlass ? "text-white/40" : "text-lab-text/40"
-                  )}>Set Stage</span>
-                  <div className="flex gap-1">
-                    {stages.map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => updateStatus(s, stageStatus)}
-                        className={clsx(
-                          "px-2 py-1 rounded-md text-[9px] font-bold uppercase transition-all",
-                          isGlass
+            <div className={clsx(
+              "p-3 rounded-2xl shadow-xl flex flex-col gap-3 animate-in fade-in slide-in-from-right-4",
+              isLG2
+                ? "lg2-glass-board border-white/20"
+                : (isGlass ? "glass-card" : "bg-white/95 backdrop-blur-md border border-lab-ui/20")
+            )}>
+              <div className="flex flex-col gap-1">
+                <span className={clsx(
+                  "text-[8px] font-black uppercase tracking-widest ml-1",
+                  isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
+                )}>Set Stage</span>
+                <div className="flex gap-1">
+                  {stages.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => updateStatus(s, stageStatus)}
+                      className={clsx(
+                        "px-2 py-1 rounded-md text-[9px] font-bold uppercase transition-all",
+                        isLG2
+                          ? stage === s
+                            ? "bg-slate-800 text-white"
+                            : "lg2-glass-bubble text-slate-600 hover:text-slate-800"
+                          : (isGlass
                             ? stage === s
                               ? "bg-white text-glass-text"
                               : "bg-white/10 text-white hover:bg-white/20"
                             : stage === s
                               ? "bg-lab-text text-lab-bg"
-                              : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/40"
-                        )}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
+                              : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/40")
+                      )}
+                    >
+                      {s}
+                    </button>
+                  ))}
                 </div>
-                <div className="flex flex-col gap-1">
-                  <span className={clsx(
-                    "text-[8px] font-black uppercase tracking-widest ml-1",
-                    isGlass ? "text-white/40" : "text-lab-text/40"
-                  )}>Set Status</span>
-                  <div className="flex gap-1">
-                    {statuses.map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => updateStatus(stage, s)}
-                        className={clsx(
-                          "px-2 py-1 rounded-md text-[9px] font-bold uppercase transition-all",
-                          isGlass
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className={clsx(
+                  "text-[8px] font-black uppercase tracking-widest ml-1",
+                  isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
+                )}>Set Status</span>
+                <div className="flex gap-1">
+                  {statuses.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => updateStatus(stage, s)}
+                      className={clsx(
+                        "px-2 py-1 rounded-md text-[9px] font-bold uppercase transition-all",
+                        isLG2
+                          ? stageStatus === s
+                            ? "bg-slate-800 text-white"
+                            : "lg2-glass-bubble text-slate-600 hover:text-slate-800"
+                          : (isGlass
                             ? stageStatus === s
                               ? "bg-white text-glass-text"
                               : "bg-white/10 text-white hover:bg-white/20"
                             : stageStatus === s
                               ? "bg-lab-text text-lab-bg"
-                              : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/40"
-                        )}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
+                              : "bg-lab-ui/20 text-lab-text hover:bg-lab-ui/40")
+                      )}
+                    >
+                      {s}
+                    </button>
+                  ))}
                 </div>
               </div>
+            </div>
             </div>
           )}
 
@@ -335,7 +346,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             data-testid="idea-title"
             className={clsx(
               "text-3xl font-bold tracking-tight mb-6 leading-[1.1]",
-              isGlass ? "text-white" : "text-lab-text",
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text"),
               canShowSummary && "cursor-help"
             )}
             onMouseEnter={() => canShowSummary && setShowAiSummary(true)}
@@ -349,7 +360,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
               data-testid="idea-problem-text"
               className={clsx(
                 "text-lg whitespace-pre-wrap leading-relaxed font-light italic serif transition-all duration-300",
-                isGlass ? "text-white/70" : "text-lab-text/70",
+                isLG2 ? "text-slate-600" : (isGlass ? "text-white/70" : "text-lab-text/70"),
                 !isExpanded && "line-clamp-3"
               )}
             >
@@ -360,7 +371,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
                 onClick={() => setIsExpanded(!isExpanded)}
                 className={clsx(
                   "text-[10px] font-black uppercase tracking-[0.2em] mt-2 transition-colors flex items-center gap-1",
-                  isGlass ? "text-glass-secondary hover:text-white" : "text-lab-ui hover:text-lab-text"
+                  isLG2 ? "text-teal-600 hover:text-teal-800" : (isGlass ? "text-glass-secondary hover:text-white" : "text-lab-ui hover:text-lab-text")
                 )}
               >
                 {isExpanded ? (
@@ -376,9 +387,9 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             {idea.department && (
               <span className={clsx(
                 "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
-                isGlass
-                  ? "bg-white/10 text-white/60 border-white/20"
-                  : "bg-lab-ui/10 text-lab-text/60 border-lab-ui/20"
+                isLG2
+                  ? "bg-slate-100 text-slate-500 border-slate-200"
+                  : (isGlass ? "bg-white/10 text-white/60 border-white/20" : "bg-lab-ui/10 text-lab-text/60 border-lab-ui/20")
               )}>
                 <Briefcase size={10} /> {idea.department}
               </span>
@@ -386,9 +397,9 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             {idea.country && (
               <span className={clsx(
                 "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
-                isGlass
-                  ? "bg-white/10 text-white/60 border-white/20"
-                  : "bg-lab-ui/10 text-lab-text/60 border-lab-ui/20"
+                isLG2
+                  ? "bg-slate-100 text-slate-500 border-slate-200"
+                  : (isGlass ? "bg-white/10 text-white/60 border-white/20" : "bg-lab-ui/10 text-lab-text/60 border-lab-ui/20")
               )}>
                 <Globe size={10} /> {idea.country}
               </span>
@@ -397,16 +408,16 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
               <span className={clsx(
                 "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
                 idea.impact === "Critical"
-                  ? isGlass
-                    ? "bg-red-500/20 text-red-400 border-red-500/30"
-                    : "bg-red-500/10 text-red-600 border-red-500/20"
+                  ? isLG2
+                    ? "bg-red-50 text-red-600 border-red-100"
+                    : (isGlass ? "bg-red-500/20 text-red-400 border-red-500/30" : "bg-red-500/10 text-red-600 border-red-500/20")
                   : idea.impact === "High"
-                    ? isGlass
-                      ? "bg-orange-500/20 text-orange-400 border-orange-500/30"
-                      : "bg-orange-500/10 text-orange-600 border-orange-500/20"
-                    : isGlass
-                      ? "bg-white/10 text-white/60 border-white/20"
-                      : "bg-lab-ui/10 text-lab-text/60 border-lab-ui/20"
+                    ? isLG2
+                      ? "bg-orange-50 text-orange-600 border-orange-100"
+                      : (isGlass ? "bg-orange-500/20 text-orange-400 border-orange-500/30" : "bg-orange-500/10 text-orange-600 border-orange-500/20")
+                    : isLG2
+                      ? "bg-slate-100 text-slate-500 border-slate-200"
+                      : (isGlass ? "bg-white/10 text-white/60 border-white/20" : "bg-lab-ui/10 text-lab-text/60 border-lab-ui/20")
               )}>
                 <BarChart3 size={10} /> {idea.impact}
               </span>
@@ -422,7 +433,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
             }}
             className={clsx(
               "flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] transition-colors mb-8 group/details cursor-pointer relative z-10",
-              isGlass ? "text-glass-secondary hover:text-white" : "text-lab-ui hover:text-lab-text"
+              isLG2 ? "text-slate-400 hover:text-slate-800" : (isGlass ? "text-glass-secondary hover:text-white" : "text-lab-ui hover:text-lab-text")
             )}
           >
             {showDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -432,12 +443,12 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
           {showDetails && (
             <div className={clsx(
               "mb-10 space-y-8 animate-in fade-in duration-500 slide-in-from-top-4 border-t pt-8",
-              isGlass ? "border-white/10" : "border-lab-ui/10"
+              isLG2 ? "border-slate-100" : (isGlass ? "border-white/10" : "border-lab-ui/10")
             )}>
               {!idea.solution && !idea.relatedProduct && !idea.additionalBusiness && !idea.involvement && !idea.revenue && !idea.fileBase64 ? (
                 <p className={clsx(
                   "text-[10px] font-black uppercase tracking-widest italic",
-                  isGlass ? "text-white/30" : "text-lab-text/30"
+                  isLG2 ? "text-slate-300" : (isGlass ? "text-white/30" : "text-lab-text/30")
                 )}>NO_ADDITIONAL_INTELLIGENCE_RECORDED_FOR_THIS_NODE</p>
               ) : (
                 <>
@@ -445,15 +456,15 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
                   {idea.solution && (
                     <div className={clsx(
                       "p-6 rounded-2xl border",
-                      isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10"
+                      isLG2 ? "bg-slate-50 border-slate-100" : (isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10")
                     )}>
                       <h4 className={clsx(
                         "text-[10px] font-black uppercase tracking-[0.3em] mb-3 break-words whitespace-normal",
-                        isGlass ? "text-white/40" : "text-lab-text/40"
+                        isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                       )}>Proposed Solution</h4>
                       <p className={clsx(
                         "text-base leading-relaxed whitespace-pre-wrap",
-                        isGlass ? "text-white/80" : "text-lab-text/80"
+                        isLG2 ? "text-slate-700" : (isGlass ? "text-white/80" : "text-lab-text/80")
                       )}>{idea.solution}</p>
                     </div>
                   )}
@@ -462,62 +473,62 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
                     {idea.relatedProduct && (
                       <div className={clsx(
                         "p-6 rounded-2xl border",
-                        isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10"
+                        isLG2 ? "bg-slate-50 border-slate-100" : (isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10")
                       )}>
                         <h4 className={clsx(
                           "text-[10px] font-black uppercase tracking-[0.3em] mb-3 break-words whitespace-normal",
-                          isGlass ? "text-white/40" : "text-lab-text/40"
+                          isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                         )}>Related Product</h4>
                         <p className={clsx(
                           "text-sm leading-relaxed whitespace-pre-wrap",
-                          isGlass ? "text-white/80" : "text-lab-text/80"
+                          isLG2 ? "text-slate-600" : (isGlass ? "text-white/80" : "text-lab-text/80")
                         )}>{idea.relatedProduct}</p>
                       </div>
                     )}
                     {idea.additionalBusiness && (
                       <div className={clsx(
                         "p-6 rounded-2xl border",
-                        isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10"
+                        isLG2 ? "bg-slate-50 border-slate-100" : (isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10")
                       )}>
                         <h4 className={clsx(
                           "text-[10px] font-black uppercase tracking-[0.3em] mb-3 break-words whitespace-normal",
-                          isGlass ? "text-white/40" : "text-lab-text/40"
+                          isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                         )}>Additional Business</h4>
                         <p className={clsx(
                           "text-sm leading-relaxed whitespace-pre-wrap",
-                          isGlass ? "text-white/80" : "text-lab-text/80"
+                          isLG2 ? "text-slate-600" : (isGlass ? "text-white/80" : "text-lab-text/80")
                         )}>{idea.additionalBusiness}</p>
                       </div>
                     )}
                     {idea.involvement && (
                       <div className={clsx(
                         "p-6 rounded-2xl border",
-                        isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10"
+                        isLG2 ? "bg-slate-50 border-slate-100" : (isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10")
                       )}>
                         <h4 className={clsx(
                           "text-[10px] font-black uppercase tracking-[0.3em] mb-3 break-words whitespace-normal",
-                          isGlass ? "text-white/40" : "text-lab-text/40"
+                          isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                         )}>Development Involvement</h4>
                         <p className={clsx(
                           "text-sm leading-relaxed whitespace-pre-wrap",
-                          isGlass ? "text-white/80" : "text-lab-text/80"
+                          isLG2 ? "text-slate-600" : (isGlass ? "text-white/80" : "text-lab-text/80")
                         )}>{idea.involvement}</p>
                       </div>
                     )}
                     {idea.revenue && (
                       <div className={clsx(
                         "p-6 rounded-2xl border",
-                        isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10"
+                        isLG2 ? "bg-slate-50 border-slate-100" : (isGlass ? "bg-white/5 border-white/10" : "bg-lab-ui/5 border-lab-ui/10")
                       )}>
                         <h4 className={clsx(
                           "text-[10px] font-black uppercase tracking-[0.3em] mb-3 flex items-center gap-2 break-words whitespace-normal",
-                          isGlass ? "text-white/40" : "text-lab-text/40"
+                          isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                         )}>
                           <DollarSign size={12} /> Potential Revenue
                         </h4>
                         <p className={clsx(
                           "text-sm font-bold",
-                          isGlass ? "text-white" : "text-lab-text"
+                          isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text")
                         )}>
                           {displayRevenue(idea.revenue)} {typeof idea.revenue === 'number' && <span className="text-[10px] font-normal opacity-40">USD</span>}
                         </p>
@@ -530,11 +541,11 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
                     <div className="space-y-3">
                       <h4 className={clsx(
                         "text-[10px] font-black uppercase tracking-[0.3em] break-words whitespace-normal",
-                        isGlass ? "text-white/40" : "text-lab-text/40"
+                        isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                       )}>Visual Asset Nodes</h4>
                       <div className={clsx(
                         "rounded-[1.5rem] overflow-hidden border shadow-lg group/img relative",
-                        isGlass ? "border-white/20" : "border-lab-ui/20"
+                        isLG2 ? "border-slate-100" : (isGlass ? "border-white/20" : "border-lab-ui/20")
                       )}>
                         <img
                           src={idea.fileBase64}
@@ -555,7 +566,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
 
           <div className={clsx(
             "flex items-start justify-between text-xs font-bold tracking-widest uppercase opacity-40 mb-10 border-t pt-6 gap-4",
-            isGlass ? "border-white/10 text-white" : "border-lab-text/5 text-lab-text"
+            isLG2 ? "border-slate-100 text-slate-800" : (isGlass ? "border-white/10 text-white" : "border-lab-text/5 text-lab-text")
           )}>
             <span className="flex-1 break-words">USR_{idea.userName.toUpperCase()}</span>
             <span className="shrink-0 whitespace-nowrap">TS_{new Date(idea.createdAt).toLocaleDateString()}</span>
@@ -566,13 +577,17 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
               onClick={toggleLike}
               className={clsx(
                 "flex items-center justify-center w-14 h-14 rounded-full transition-all duration-500 shadow-lg hover:shadow-xl active:scale-90",
-                isGlass
+                isLG2
                   ? hasLiked
-                    ? "glass-button text-white"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                  : hasLiked
-                    ? "bg-lab-ui text-lab-bg"
-                    : "bg-lab-ui/10 text-lab-ui hover:bg-lab-ui/20"
+                    ? "lg2-liquid-teal text-white shadow-xl"
+                    : "lg2-glass-bubble text-teal-600 hover:text-teal-800"
+                  : (isGlass
+                    ? hasLiked
+                      ? "glass-button text-white"
+                      : "bg-white/10 text-white hover:bg-white/20"
+                    : hasLiked
+                      ? "bg-lab-ui text-lab-bg"
+                      : "bg-lab-ui/10 text-lab-ui hover:bg-lab-ui/20")
               )}
             >
               <ThumbsUp size={24} fill={hasLiked ? "currentColor" : "none"} />
@@ -582,13 +597,17 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
               onClick={() => setShowComments(!showComments)}
               className={clsx(
                 "flex items-center justify-center w-14 h-14 rounded-full transition-all duration-500 shadow-lg hover:shadow-xl active:scale-90",
-                isGlass
+                isLG2
                   ? showComments
-                    ? "bg-white text-glass-text"
-                    : "bg-white/10 text-white hover:bg-white/20"
-                  : showComments
-                    ? "bg-lab-text text-lab-bg"
-                    : "bg-lab-text/5 text-lab-text hover:bg-lab-text/10"
+                    ? "lg2-liquid-purple text-white shadow-xl"
+                    : "lg2-glass-bubble text-slate-600 hover:text-slate-800"
+                  : (isGlass
+                    ? showComments
+                      ? "bg-white text-glass-text"
+                      : "bg-white/10 text-white hover:bg-white/20"
+                    : showComments
+                      ? "bg-lab-text text-lab-bg"
+                      : "bg-lab-text/5 text-lab-text hover:bg-lab-text/10")
               )}
             >
               <MessageSquare size={24} />
@@ -596,7 +615,7 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
 
             <div className={clsx(
               "flex-1 flex justify-end items-center space-x-6 text-[10px] font-black tracking-[0.2em] opacity-30 uppercase",
-              isGlass ? "text-white" : "text-lab-text"
+              isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text")
             )}>
               <span>{likes.length} LKS</span>
               <span>{commentCount} CMS</span>
@@ -608,41 +627,41 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
         {showComments && (
           <div className={clsx(
             "mt-10 pt-10 border-t",
-            isGlass ? "border-white/10" : "border-lab-text/5",
-            isGlass ? "glass-reveal" : "ink-reveal"
+            isLG2 ? "border-slate-100" : (isGlass ? "border-white/10" : "border-lab-text/5"),
+            isLG2 ? "lg2-reveal" : (isGlass ? "glass-reveal" : "ink-reveal")
           )}>
             <div className="space-y-8 mb-10 pr-4">
               {loadingComments ? (
                 <p className={clsx(
                   "text-xs font-bold uppercase tracking-widest animate-pulse",
-                  isGlass ? "text-white/40" : "text-lab-text/40"
+                  isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                 )}>Syncing nodes...</p>
               ) : comments.length === 0 ? (
                 <p className={clsx(
                   "text-xs font-bold uppercase tracking-widest",
-                  isGlass ? "text-white/40" : "text-lab-text/40"
+                  isLG2 ? "text-slate-400" : (isGlass ? "text-white/40" : "text-lab-text/40")
                 )}>No communications recorded.</p>
               ) : (
                 comments.map((comment, index) => (
                   <div key={index} className={clsx(
                     "pb-8 border-b last:border-none",
-                    isGlass ? "border-white/10" : "border-lab-text/5"
+                    isLG2 ? "border-slate-50" : (isGlass ? "border-white/10" : "border-lab-text/5")
                   )}>
                     <div className="flex justify-between items-center mb-3">
                       <span className={clsx(
                         "text-xs font-black uppercase tracking-widest",
-                        isGlass ? "text-white" : "text-lab-text"
+                        isLG2 ? "text-slate-800" : (isGlass ? "text-white" : "text-lab-text")
                       )}>ID_{comment.userName.toUpperCase()}</span>
                       <span className={clsx(
                         "text-[10px] font-bold tracking-widest",
-                        isGlass ? "text-white/30" : "text-lab-text/30"
+                        isLG2 ? "text-slate-300" : (isGlass ? "text-white/30" : "text-lab-text/30")
                       )}>
                         {new Date(comment.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                     <p className={clsx(
                       "text-base leading-relaxed font-sans",
-                      isGlass ? "text-white/70" : "text-lab-text/70"
+                      isLG2 ? "text-slate-600" : (isGlass ? "text-white/70" : "text-lab-text/70")
                     )}>{comment.content}</p>
                   </div>
                 ))
@@ -656,9 +675,11 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
                 placeholder="ENTER_REPLY_SEQUENCE..."
                 className={clsx(
                   "w-full rounded-[1.5rem] p-6 text-base focus:outline-none transition-all resize-none h-28 font-bold",
-                  isGlass
-                    ? "glass-input text-white placeholder:text-white/20"
-                    : "bg-lab-ui/5 text-lab-text placeholder:text-lab-text/20 focus:bg-lab-ui/10"
+                  isLG2
+                    ? "lg2-glass-bubble border-slate-200 text-slate-800 placeholder:text-slate-300"
+                    : (isGlass
+                      ? "glass-input text-white placeholder:text-white/20"
+                      : "bg-lab-ui/5 text-lab-text placeholder:text-lab-text/20 focus:bg-lab-ui/10")
                 )}
                 disabled={submittingComment}
               />
@@ -667,9 +688,11 @@ export default function IdeaCard({ idea }: IdeaCardProps) {
                 disabled={!newComment.trim() || submittingComment}
                 className={clsx(
                   "absolute bottom-6 right-6 text-[10px] font-black tracking-[0.2em] px-8 py-3 rounded-full transition-all disabled:opacity-20 uppercase shadow-xl",
-                  isGlass
-                    ? "glass-button text-white"
-                    : "bg-lab-text text-lab-bg hover:bg-lab-ui hover:text-lab-text"
+                  isLG2
+                    ? "lg2-liquid-teal text-white"
+                    : (isGlass
+                      ? "glass-button text-white"
+                      : "bg-lab-text text-lab-bg hover:bg-lab-ui hover:text-lab-text")
                 )}
               >
                 {submittingComment ? "TRANSMITTING..." : "POST_LOG"}
